@@ -97,7 +97,7 @@ public class PrivateSchoolRandomizer {
             String firstName, lastName;
             LocalDate dateOfBirth;
             float fees;
-
+        
             if (isFemale) {
                 firstName = femaleFirst[r.nextInt(femaleFirst.length)];
                 lastName = femaleLast[r.nextInt(femaleLast.length)];
