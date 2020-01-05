@@ -13,7 +13,7 @@ import java.util.Set;
 import java.util.TreeSet;
 import privateschoolAPI.PrivateSchoolAPI;
 import privateschoolstructure.Assignment;
-import privateschoolstructure.PrivateSchoolCohort;
+import privateschoolstructure.SchoolUnit;
 import privateschoolstructure.Student;
 import privateschoolstructure.Trainer;
 
@@ -35,31 +35,42 @@ public class PrivateSchoolRandomizer {
      * creation of "PrivateSchool" data
      */
     String[] maleFirst = {"Nick", "Michael", "Panagiotis", "George",
-        "Kyriakos", "Nikolaos", "Odysseas", "Panagiotis", "Kostas", "George",
-        "Dimitris ", "Iasonas ", "Christos", "Vasilis", "Konstantinos",
-        "Michalis", "Angelos", "Nikos", "Ilias", "Stathis", "Dimitrios", "Harry"};
+                          "Kyriakos", "Nikolaos", "Odysseas", "Panagiotis",
+                          "Kostas", "George",
+                          "Dimitris ", "Iasonas ", "Christos", "Vasilis",
+                          "Konstantinos",
+                          "Michalis", "Angelos", "Nikos", "Ilias", "Stathis",
+                          "Dimitrios", "Harry"};
 
     String[] maleLast = {"Kyriakidis", "Despotidis", "Tasoylas", "Vournas",
-        "Balaskas", "Asimakopoulos", "Syrios", "Letsios", "Chatzigeorgiou",
-        "Baroutas", "Tzitzis", "Christou", "Tzelis", "Douros", "Aleiferis",
-        "Mageirias", "Vardakis", "Loudianos", "Triantafyllou", "Tsekouras",
-        "Kladis", "Misoulis", "Papadopoulos", "Giazitzis", "Xideros",
-        "Petromichelakis", "Potter"};
+                         "Balaskas", "Asimakopoulos", "Syrios", "Letsios",
+                         "Chatzigeorgiou",
+                         "Baroutas", "Tzitzis", "Christou", "Tzelis", "Douros",
+                         "Aleiferis",
+                         "Mageirias", "Vardakis", "Loudianos", "Triantafyllou",
+                         "Tsekouras",
+                         "Kladis", "Misoulis", "Papadopoulos", "Giazitzis",
+                         "Xideros",
+                         "Petromichelakis", "Potter"};
 
-    String[] femaleFirst = {"Irene", "Eleni", "Ilektra", "Nerina", "Aliki", "Anastasia",
-        "Elisavet", "Niki", "Kalliopi"};
+    String[] femaleFirst = {"Irene", "Eleni", "Ilektra", "Nerina", "Aliki",
+                            "Anastasia",
+                            "Elisavet", "Niki", "Kalliopi"};
 
     String[] femaleLast = {"Zaraloglou", "Nicolaides", "Spiliotaki", "Tsirozidi",
-        "Gavana", "Pyrovolikou", "Chalvatzi", "Tasoula", "Rokka", "Koutsiouki"};
+                           "Gavana", "Pyrovolikou", "Chalvatzi", "Tasoula",
+                           "Rokka", "Koutsiouki"};
 
     String[] trainerLast = {"Irakleidis", "Karapas", "Zorbadakis", "Nicolaides",
-        "Pasparakis", "Yoda", "Dumbledore", "Splinter", "ObiWanKenobi"};
+                            "Pasparakis", "Yoda", "Dumbledore", "Splinter",
+                            "ObiWanKenobi"};
 
     String[][] assignmentNames = {{"Private School", "Part A"},
-    {"Private School", "Part B"}, {"DataBase", "SQL exercise"},
-    {"WebSite", "Part A"}, {"WebSite", "Part B"},
-    {"Certification", "Foundation by PeopleCert"},
-    {"Certification", "Advanced by PeopleCert"}};
+                                  {"Private School", "Part B"}, {"DataBase",
+                                                                 "SQL exercise"},
+                                  {"WebSite", "Part A"}, {"WebSite", "Part B"},
+                                  {"Certification", "Foundation by PeopleCert"},
+                                  {"Certification", "Advanced by PeopleCert"}};
 
     /**
      * Random generation part of class
@@ -82,7 +93,8 @@ public class PrivateSchoolRandomizer {
         createRandomTrainers();
         createRandomSchoolUnits();
         gradAssignments();
-        System.out.println("Private School has been created with synthetic random data \n");
+        System.out.println(
+                "Private School has been created with synthetic random data \n");
     }
 
     /**
@@ -97,7 +109,7 @@ public class PrivateSchoolRandomizer {
             String firstName, lastName;
             LocalDate dateOfBirth;
             float fees;
-        
+
             if (isFemale) {
                 firstName = femaleFirst[r.nextInt(femaleFirst.length)];
                 lastName = femaleLast[r.nextInt(femaleLast.length)];
@@ -105,10 +117,13 @@ public class PrivateSchoolRandomizer {
                 firstName = maleFirst[r.nextInt(maleFirst.length)];
                 lastName = maleLast[r.nextInt(maleLast.length)];
             }
-            dateOfBirth = randomDate(LocalDate.now().minusYears(80), LocalDate.now().minusYears(16));
+            dateOfBirth = randomDate(LocalDate.now().minusYears(80), LocalDate.
+                                     now().minusYears(16));
             fees = r.nextInt((int) codingBootcamp.getFEES_RANGE()[1]);
 
-            this.codingBootcamp.getStudents().add(new Student(firstName, lastName, dateOfBirth, fees));
+            this.codingBootcamp.getStudents().add(new Student(firstName,
+                                                              lastName,
+                                                              dateOfBirth, fees));
             counter++;
         }
         System.out.println(counter + " synthetic students have been created");
@@ -125,8 +140,11 @@ public class PrivateSchoolRandomizer {
         int deltaYear = maxYear - minYear;
         try {
             while (true) {
-                tempDate = LocalDate.parse((r.nextInt(deltaYear + 1) + minYear) + "-" + r.nextInt(13) + "-" + r.nextInt(32));
-                if ((tempDate.compareTo(minDate) > 0) && (tempDate.compareTo(maxDate) < 0)) {
+                tempDate = LocalDate.parse(
+                        (r.nextInt(deltaYear + 1) + minYear) + "-" + r.nextInt(
+                        13) + "-" + r.nextInt(32));
+                if ((tempDate.compareTo(minDate) > 0) && (tempDate.compareTo(
+                                                          maxDate) < 0)) {
                     return tempDate;
                 }
             }
@@ -143,17 +161,20 @@ public class PrivateSchoolRandomizer {
             String firstName = maleFirst[r.nextInt(maleFirst.length)];
             String lastName = trainerLast[r.nextInt(trainerLast.length)];
             String subjectName = codingBootcamp.getSUBJECTS()[Math.min(i,
-                    codingBootcamp.getSUBJECTS().length - 1)];
+                                                                       codingBootcamp.
+                                                                               getSUBJECTS().length - 1)];
 
-            codingBootcamp.getTrainers().add(new Trainer(firstName, lastName, subjectName));
+            codingBootcamp.getTrainers().add(new Trainer(firstName, lastName,
+                                                         subjectName));
             counter++;
         }
         System.out.println(counter + " synthetic trainers have been created");
     }
 
     /**
-     * Creates one set per type of private house (with maximum two) which 
-     * includes the necessary expected parameters for creation of all assignments per student
+     * Creates one set per type of private house (with maximum two) which
+     * includes the necessary expected parameters for creation of all
+     * assignments per student
      */
     private Set<Object[]> createRandomAssignments(String type) {
 
@@ -161,7 +182,8 @@ public class PrivateSchoolRandomizer {
         if (type.equals(codingBootcamp.getTYPES()[0])) {
 
             Object[] temp = new Object[3];
-            long tempPeriod = codingBootcamp.getEND_DATE_FULLTIME().until(codingBootcamp.getSTART_DATE(), ChronoUnit.DAYS);
+            long tempPeriod = codingBootcamp.getEND_DATE_FULLTIME().until(
+                    codingBootcamp.getSTART_DATE(), ChronoUnit.DAYS);
             LocalDate tempDeadline = codingBootcamp.getEND_DATE_FULLTIME();
             for (int i = 0; i < codingBootcamp.getNUMBER_OF_ASSIGNMENTS(); i++) {
                 int j = Math.min(i, assignmentNames.length - 1);
@@ -171,13 +193,15 @@ public class PrivateSchoolRandomizer {
                 temp[2] = tempDeadline;
                 resultAssignment.add(temp);
 
-                tempDeadline = tempDeadline.plusDays(tempPeriod / codingBootcamp.getNUMBER_OF_ASSIGNMENTS());
+                tempDeadline = tempDeadline.plusDays(
+                        tempPeriod / codingBootcamp.getNUMBER_OF_ASSIGNMENTS());
                 temp = new Object[3]; //Deep Copy, and some work for the garbage collector
             }
         } else if (type.equals(codingBootcamp.getTYPES()[1])) {
 
             Object[] temp = new Object[3];
-            long tempPeriod = codingBootcamp.getEND_DATE_FULLTIME().until(codingBootcamp.getSTART_DATE(), ChronoUnit.DAYS);
+            long tempPeriod = codingBootcamp.getEND_DATE_FULLTIME().until(
+                    codingBootcamp.getSTART_DATE(), ChronoUnit.DAYS);
             LocalDate tempDeadline = codingBootcamp.getEND_DATE_FULLTIME();
             for (int i = 0; i < codingBootcamp.getNUMBER_OF_ASSIGNMENTS(); i++) {
                 int j = Math.min(i, assignmentNames.length - 1);
@@ -185,7 +209,8 @@ public class PrivateSchoolRandomizer {
                 temp[1] = assignmentNames[j][1];
                 temp[2] = tempDeadline;
                 resultAssignment.add(temp);
-                tempDeadline = tempDeadline.plusDays(tempPeriod / codingBootcamp.getNUMBER_OF_ASSIGNMENTS());
+                tempDeadline = tempDeadline.plusDays(
+                        tempPeriod / codingBootcamp.getNUMBER_OF_ASSIGNMENTS());
                 temp = new Object[3]; //Deep Copy, and some work for the garbage collector
 
             }
@@ -199,48 +224,55 @@ public class PrivateSchoolRandomizer {
             for (String type : codingBootcamp.getTYPES()) {
                 LocalDate tempEndDate;
                 tempEndDate = (type.equals(codingBootcamp.getTYPES()[0])
-                        ? codingBootcamp.getEND_DATE_FULLTIME()
-                        : codingBootcamp.getEND_DATE_PARTTIME());
+                               ? codingBootcamp.getEND_DATE_FULLTIME()
+                               : codingBootcamp.getEND_DATE_PARTTIME());
 
                 codingBootcamp.getSchoolUnits()
-                        .add(new PrivateSchoolCohort(codingBootcamp.getTITLE(),
-                                stream, type, codingBootcamp.getSTART_DATE(),
-                                tempEndDate, chooseRandomTENStudents(),
-                                codingBootcamp.getTrainers(),
-                                createRandomAssignments(type)));
+                        .add(new SchoolUnit(codingBootcamp.getTITLE(),
+                                            stream, type, codingBootcamp.
+                                                    getSTART_DATE(),
+                                            tempEndDate,
+                                            chooseRandomTENStudents(),
+                                            codingBootcamp.getTrainers(),
+                                            createRandomAssignments(type)));
                 counter++;
             }
 
         }
         System.out.println(counter + " courses have been created");
     }
-/**
- * Randomly assigns 10 students at most in each School Unit.
- *  There is no check of doubles
- */
+
+    /**
+     * Randomly assigns 10 students at most in each School Unit.
+     * There is no check of doubles
+     */
     private Set<Student> chooseRandomTENStudents() {
         Set<Student> tempStudents = new TreeSet();
 
         for (int i = 0; i < 10; i++) {
-            tempStudents.add(codingBootcamp.getStudents().get(r.nextInt(codingBootcamp.getStudents().size())));
+            tempStudents.add(codingBootcamp.getStudents().get(r.nextInt(
+                    codingBootcamp.getStudents().size())));
         }
 
         return tempStudents;
     }
-/**
- * Randomly assign marks and submission date in all assignments
- */
+
+    /**
+     * Randomly assign marks and submission date in all assignments
+     */
     private void gradAssignments() {
 
-        for (PrivateSchoolCohort course : codingBootcamp.getSchoolUnits()) {
+        for (SchoolUnit course : codingBootcamp.getSchoolUnits()) {
             LocalDate minDate = course.getStartDate();
             LocalDate maxDate = course.getEndDate().plusMonths(1);
 
-            course.getMapOfAssignments().values().forEach((ArrayList<Assignment> assignment) -> { //den to pistevo oti "mallon" doulevei afto. an kai diskoleuomai na katallavo ta lambda....
-                assignment.forEach((assignment1) -> {
-                    assignment1.setGrade(r.nextInt(101), randomDate(minDate, maxDate));
-                });
-            });
+            course.getMapOfAssignments().values().forEach(
+                    (ArrayList<Assignment> assignment) -> { //den to pistevo oti "mallon" doulevei afto. an kai diskoleuomai na katallavo ta lambda....
+                        assignment.forEach((assignment1) -> {
+                            assignment1.setGrade(r.nextInt(101), randomDate(
+                                                 minDate, maxDate));
+                        });
+                    });
         }
     }
 }

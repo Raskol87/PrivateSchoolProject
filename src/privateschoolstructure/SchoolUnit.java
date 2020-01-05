@@ -15,7 +15,7 @@ import java.util.*;
  * @author kkyriakidis
  * @version 0.1 (alpha)
  */
-public class PrivateSchoolCohort extends Course {
+public class SchoolUnit extends Course {
 
     private List<Trainer> trainers;
     private Set<Object[]> prototypeAssignments;
@@ -23,7 +23,7 @@ public class PrivateSchoolCohort extends Course {
     private Map<Student, ArrayList<Assignment>> studentAssignments = new TreeMap();
 
     //Constructors
-    public PrivateSchoolCohort(String title, String stream, String type,
+    public SchoolUnit(String title, String stream, String type,
             LocalDate start_date, LocalDate end_date, Set<Student> students,
             List<Trainer> trainers, Set prototypeAssignments) {
         super(title, stream, type, start_date, end_date);
@@ -35,7 +35,7 @@ public class PrivateSchoolCohort extends Course {
         System.out.println(super.toString());
     }
 
-    public PrivateSchoolCohort(String title, String stream, String type,
+    public SchoolUnit(String title, String stream, String type,
             LocalDate start_date, LocalDate end_date) {
         super(title, stream, type, start_date, end_date);
         this.trainers = new ArrayList();

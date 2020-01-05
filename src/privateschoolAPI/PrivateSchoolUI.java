@@ -9,7 +9,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Scanner;
 import privateschoolstructure.Assignment;
-import privateschoolstructure.PrivateSchoolCohort;
+import privateschoolstructure.SchoolUnit;
 import privateschoolstructure.Student;
 import privateschoolstructure.Trainer;
 
@@ -90,8 +90,8 @@ public class PrivateSchoolUI {
                         PrivSchool.buildStudent();
                         if (!PrivSchool.getSchoolUnits().isEmpty()) {    //check of list initialization
                             while (isYesOrNo("Do you want also to enroll the student in an existing course? [y/n]")) {
-                                PrivateSchoolCohort tempObj // user choice
-                                        = (PrivateSchoolCohort) chooseFromList((List<PrivateSchoolCohort>) PrivSchool.getSchoolUnits());
+                                SchoolUnit tempObj // user choice
+                                        = (SchoolUnit) chooseFromList((List<SchoolUnit>) PrivSchool.getSchoolUnits());
                                 tempObj.addNewStudent( //gets the last object added to list, which is the object created in the same loop
                                         PrivSchool.getStudents().get(
                                                 PrivSchool.getStudents().size() - 1));
@@ -116,7 +116,7 @@ public class PrivateSchoolUI {
                                         .setStudents(PrivSchool.getStudents());
                             }
                         }
-                        PrivateSchoolCohort tempCourse = PrivSchool.getSchoolUnits().get(PrivSchool.getSchoolUnits().size() - 1); //gets the last object added to list, which is the object created in the same loop
+                        SchoolUnit tempCourse = PrivSchool.getSchoolUnits().get(PrivSchool.getSchoolUnits().size() - 1); //gets the last object added to list, which is the object created in the same loop
                         if (isYesOrNo("Do you want to submit to course "
                                 + "assignment info -and create assignments- "
                                 + "that are stored (if created)?[y/n]")) {
@@ -136,7 +136,7 @@ public class PrivateSchoolUI {
                     if (!PrivSchool.getSchoolUnits().isEmpty()) {
                         if (isYesOrNo("Do you want to assign created trainers to existing courses? [y/n]"
                                 + "\nThis will assign ALL stored trainers to ALL stored courses.")) {
-                            for (PrivateSchoolCohort course : PrivSchool.getSchoolUnits()) {
+                            for (SchoolUnit course : PrivSchool.getSchoolUnits()) {
                                 System.out.println("Trainers assigned to " + course);
                                 course.setTrainers(PrivSchool.getTrainers());
                             }
@@ -154,7 +154,7 @@ public class PrivateSchoolUI {
                     } while (isYesOrNo("Do you want to add additional assignment info?[y/n]"));
                     if (isYesOrNo("Do you want to insert list of assignment info to stored courses?[y/n]"
                             + "\nThis will create assignments to all stored courses currently.")) {
-                        for (PrivateSchoolCohort course : PrivSchool.getSchoolUnits()) {
+                        for (SchoolUnit course : PrivSchool.getSchoolUnits()) {
                             if (course.getType().equals(PrivSchool.getTYPES()[0])) {
                                 course.setPrototypeAssignments(PrivSchool.getPrototypeAssignments_FullTime());
                             } else {
@@ -218,7 +218,7 @@ public class PrivateSchoolUI {
                     break;
                 case 5: //view all assignments
                     ArrayList tempAssignmentList = new ArrayList();
-                    for (PrivateSchoolCohort course : PrivSchool.getSchoolUnits()) {
+                    for (SchoolUnit course : PrivSchool.getSchoolUnits()) {
                         tempAssignmentList.addAll(course.getAssignments());
                     }
                     if (!tempAssignmentList.isEmpty()) {
@@ -268,7 +268,7 @@ public class PrivateSchoolUI {
     //3rd level menu
     private void runCourseMenu() {
         System.out.println("Please select relevant course to view");
-        PrivateSchoolCohort inspectedTempCourse = (PrivateSchoolCohort) chooseFromList(PrivSchool.getSchoolUnits());
+        SchoolUnit inspectedTempCourse = (SchoolUnit) chooseFromList(PrivSchool.getSchoolUnits());
         while (!this.isExit) {
             System.out.println("You view elements of " + inspectedTempCourse);
             printCourseMenu();
@@ -347,7 +347,7 @@ public class PrivateSchoolUI {
             switch (switchOption) {
                 case 0: //delete a course
                     System.out.println("Please select course to delete\nExisting Courses are:");
-                    PrivateSchoolCohort coursetoBeRemoved = (PrivateSchoolCohort) chooseFromList(PrivSchool.getSchoolUnits());
+                    SchoolUnit coursetoBeRemoved = (SchoolUnit) chooseFromList(PrivSchool.getSchoolUnits());
                     if (isYesOrNo("Removing Course will completely remove all relevant associated data.\nDo you want to proceed? [y/n]")) {
                         PrivSchool.getSchoolUnits().remove(coursetoBeRemoved);
                         System.out.println(coursetoBeRemoved + " removed");
@@ -364,7 +364,7 @@ public class PrivateSchoolUI {
                             Collections.sort(temp);//sorted shallow
                             Student toBeMoved = (Student) chooseFromList(temp);
                             System.out.println("Please select course to enroll to");
-                            PrivateSchoolCohort course = (PrivateSchoolCohort) chooseFromList(PrivSchool.getSchoolUnits());
+                            SchoolUnit course = (SchoolUnit) chooseFromList(PrivSchool.getSchoolUnits());
                             course.addNewStudent(toBeMoved);
                         } while (isYesOrNo("Do you want to enroll another student?[y/n]"));
                     } else {
@@ -420,7 +420,7 @@ public class PrivateSchoolUI {
     //3rd level menu
     private void runCourseModMenu() {
         System.out.println("Please select relevant course to modify");
-        PrivateSchoolCohort inspectedTempCourse = (PrivateSchoolCohort) chooseFromList(PrivSchool.getSchoolUnits());
+        SchoolUnit inspectedTempCourse = (SchoolUnit) chooseFromList(PrivSchool.getSchoolUnits());
         while (!this.isExit) {
             System.out.println("You view elements of " + inspectedTempCourse);
             printCourseModMenu();
@@ -497,7 +497,7 @@ public class PrivateSchoolUI {
     }
 
     //4th level menu
-    private void runStudentModMenu(PrivateSchoolCohort inspectedTempCourse) {
+    private void runStudentModMenu(SchoolUnit inspectedTempCourse) {
         System.out.println("You view elements of " + inspectedTempCourse);
         System.out.println("Please select relevant student to modify");
         Student inspectedTempStudent = (Student) chooseFromList(inspectedTempCourse.getListOfCourseStudents());
