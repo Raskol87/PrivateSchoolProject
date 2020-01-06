@@ -36,15 +36,11 @@ public class PrivateSchoolAPI {
     private List<Student> students;
     private List<Trainer> trainers;
     private List<SchoolUnit> schoolUnits;
-    private Map<String,Object[]> prototypeAssignments;
-    
+    private Map<String, Set<Object[]>> prototypeAssignments;
 
     //Constructor
     public PrivateSchoolAPI(ArrayList<Object> parameters) {
-        this.prototypeAssignments = new HashMap();
-        this.schoolUnits = new ArrayList();
-        this.trainers = new ArrayList();
-        this.students = new ArrayList();
+
         this.sc = new Scanner(System.in).useDelimiter("\\n");
         this.TITLE = (String) parameters.get(0);
         this.STREAMS = (String[]) parameters.get(1);
@@ -55,6 +51,14 @@ public class PrivateSchoolAPI {
         this.NUMBER_OF_STUDENTS = (int) parameters.get(6);
         this.SUBJECTS = (String[]) parameters.get(7);
         this.FEES_RANGE = (float[]) parameters.get(8);
+
+        this.prototypeAssignments = new HashMap();
+        TYPE_DATE.keySet().stream().forEach((t) -> this.prototypeAssignments.
+                put(t, new HashSet<>()));
+        this.schoolUnits = new ArrayList();
+        this.trainers = new ArrayList();
+        this.students = new ArrayList();
+
     }
 
     //Builders
@@ -131,27 +135,24 @@ public class PrivateSchoolAPI {
     public void insertAssignmentInfo() {
 
         Object[] aTemp = new Object[(3)];
-        Object[] bTemp = new Object[(3)];
+        System.out.println("Please select type you want to enter data");
+        String type = (String) chooseOption(TYPE_DATE.keySet().toArray());
+
         System.out.printf(
                 "Please provide Subject, Description and Deadlines\n for "
-                + "each type of Course "
+                + type + " of Courses "
                 + "Assignments \nProposed number for Assignments is %d\n",
                 NUMBER_OF_ASSIGNMENTS);
 
-        bTemp[0] = aTemp[0] = insertValidatedString("Subject ");
-        bTemp[1] = aTemp[1] = insertValidatedString("Short Description ", ".");
+        aTemp[0] = insertValidatedString("Subject ");
+        aTemp[1] = insertValidatedString("Short Description ", ".");
 
-        aTemp[2] = insertValidatedDate("Deadline for " + TYPE_DATE[0] + " ",
-                                       START_DATE, END_DATE_FULLTIME.plusMonths(
-                                               1));
+        aTemp[2] = insertValidatedDate("Deadline for " + type + " ",
+                                       START_DATE, TYPE_DATE.get(type).
+                                               plusMonths(
+                                                       1));
+        prototypeAssignments.get(type).add(aTemp);
 
-        bTemp[2] = insertValidatedDate("Deadline for " + TYPE_DATE[1] + " ",
-                                       START_DATE, END_DATE_PARTTIME.plusMonths(
-                                               1));
-
-        prototypeAssignments_FullTime.add(aTemp);
-
-        prototypeAssignments_PartTime.add(bTemp);
     }
 
 //Various Functional
@@ -345,7 +346,11 @@ public class PrivateSchoolAPI {
         if (!students.isEmpty()) {
             if (!schoolUnits.isEmpty()) {
                 checkDate = insertValidatedDate("Date to check ", START_DATE,
-                                                END_DATE_PARTTIME.plusMonths(1));
+                                                TYPE_DATE.values().stream().max(
+                                                        (t1, t2) -> t1.
+                                                                compareTo(t2)).
+                                                        get().plusMonths(1));
+
                 System.out.println(
                         "Date you requested is " + checkDate + " and it is " + checkDate.
                                 getDayOfWeek());
@@ -375,8 +380,8 @@ public class PrivateSchoolAPI {
         return STREAMS;
     }
 
-    public Map<String, LocalDate> getTYPES() {
-        return TYPE_DATE;
+    public Set<String> getTYPES() {
+        return TYPE_DATE.keySet();
     }
 
     public LocalDate getSTART_DATE() {
@@ -415,14 +420,10 @@ public class PrivateSchoolAPI {
         return trainers;
     }
 
-    public Set<Object[]> getPrototypeAssignments_FullTime() {
-        return prototypeAssignments_FullTime;
+    public Map<String,Set<Object[]> >getPrototypeAssignmentsPerType() {
+        return prototypeAssignments;
     }
-
-    public Set<Object[]> getPrototypeAssignments_PartTime() {
-        return prototypeAssignments_PartTime;
-    }
-
+    
     public void addAssignmentToStudent(Student st, SchoolUnit course) {
         String tempTitle, tempDescription;
         LocalDate tempDeadline;
