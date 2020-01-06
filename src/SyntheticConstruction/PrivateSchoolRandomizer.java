@@ -99,9 +99,26 @@ public class PrivateSchoolRandomizer {
     private void createRandomStudents() {
         int counter = 0;
         for (int i = 0; i < codingBootcamp.getNUMBER_OF_STUDENTS(); i++) {
-            System.out.
-                    println(counter + " synthetic students have been created");
+            boolean isFemale = (r.nextBoolean() && r.nextBoolean()); //emulates the fact of more male than female enrolled. excepted result of 75% male.
+            String firstName, lastName;
+            LocalDate dateOfBirth;
+            float fees;
+            if (isFemale) {
+                firstName = femaleFirst[r.nextInt(femaleFirst.length)];
+                lastName = femaleLast[r.nextInt(femaleLast.length)];
+            } else {
+                firstName = maleFirst[r.nextInt(maleFirst.length)];
+                lastName = maleLast[r.nextInt(maleLast.length)];
+            }
+            dateOfBirth = randomDate(LocalDate.now().minusYears(80), LocalDate.
+                                     now().minusYears(16));
+            fees = r.nextInt((int) codingBootcamp.getFEES_RANGE()[1]);
+            this.codingBootcamp.getStudents().add(new Student(firstName,
+                                                              lastName,
+                                                              dateOfBirth, fees));
+            counter++;
         }
+        System.out.println(counter + " synthetic students have been created");
     }
 
     /**
