@@ -69,13 +69,14 @@ public class PrivateSchoolRandomizer {
     /**
      * Random generation part of class
      */
-    Random r = new Random();
+    Random r;
 
     /**
      * Constructor Class composites a "PrivateSchool" instance.
      */
     public PrivateSchoolRandomizer(PrivateSchoolAPI codingBootcamp) {
         this.codingBootcamp = codingBootcamp;
+        this.r = new Random();
     }
 
     /**
@@ -98,29 +99,9 @@ public class PrivateSchoolRandomizer {
     private void createRandomStudents() {
         int counter = 0;
         for (int i = 0; i < codingBootcamp.getNUMBER_OF_STUDENTS(); i++) {
-
-            boolean isFemale = (r.nextBoolean() && r.nextBoolean()); //emulates the fact of more male than female enrolled. excepted result of 75% male.
-            String firstName, lastName;
-            LocalDate dateOfBirth;
-            float fees;
-
-            if (isFemale) {
-                firstName = femaleFirst[r.nextInt(femaleFirst.length)];
-                lastName = femaleLast[r.nextInt(femaleLast.length)];
-            } else {
-                firstName = maleFirst[r.nextInt(maleFirst.length)];
-                lastName = maleLast[r.nextInt(maleLast.length)];
-            }
-            dateOfBirth = randomDate(LocalDate.now().minusYears(80), LocalDate.
-                                     now().minusYears(16));
-            fees = r.nextInt((int) codingBootcamp.getFEES_RANGE()[1]);
-
-            this.codingBootcamp.getStudents().add(new Student(firstName,
-                                                              lastName,
-                                                              dateOfBirth, fees));
-            counter++;
+            System.out.
+                    println(counter + " synthetic students have been created");
         }
-        System.out.println(counter + " synthetic students have been created");
     }
 
     /**
@@ -171,70 +152,34 @@ public class PrivateSchoolRandomizer {
      * assignments per student
      */
     private Set<Object[]> createRandomAssignments(String type) {
-
-//        Set<Object[]> resultAssignment = new HashSet();
-//        if (type.equals(codingBootcamp.getTYPES()[0])) {
-//
-//            Object[] temp = new Object[3];
-//            long tempPeriod = codingBootcamp.getEND_DATE_FULLTIME().until(
-//                    codingBootcamp.getSTART_DATE(), ChronoUnit.DAYS);
-//            LocalDate tempDeadline = codingBootcamp.getEND_DATE_FULLTIME();
-//            for (int i = 0; i < codingBootcamp.getNUMBER_OF_ASSIGNMENTS(); i++) {
-//                int j = Math.min(i, assignmentNames.length - 1);
-//
-//                temp[0] = assignmentNames[j][0];
-//                temp[1] = assignmentNames[j][1];
-//                temp[2] = tempDeadline;
-//                resultAssignment.add(temp);
-//
-//                tempDeadline = tempDeadline.plusDays(
-//                        tempPeriod / codingBootcamp.getNUMBER_OF_ASSIGNMENTS());
-//                temp = new Object[3]; //Deep Copy, and some work for the garbage collector
-//            }
-//        } else if (type.equals(codingBootcamp.getTYPES()[1])) {
-//
-//            Object[] temp = new Object[3];
-//            long tempPeriod = codingBootcamp.getEND_DATE_FULLTIME().until(
-//                    codingBootcamp.getSTART_DATE(), ChronoUnit.DAYS);
-//            LocalDate tempDeadline = codingBootcamp.getEND_DATE_FULLTIME();
-//            for (int i = 0; i < codingBootcamp.getNUMBER_OF_ASSIGNMENTS(); i++) {
-//                int j = Math.min(i, assignmentNames.length - 1);
-//                temp[0] = assignmentNames[j][0];
-//                temp[1] = assignmentNames[j][1];
-//                temp[2] = tempDeadline;
-//                resultAssignment.add(temp);
-//                tempDeadline = tempDeadline.plusDays(
-//                        tempPeriod / codingBootcamp.getNUMBER_OF_ASSIGNMENTS());
-//                temp = new Object[3]; //Deep Copy, and some work for the garbage collector
-//
-//            }
-//        }
-        return new HashSet<Object[]>(); //resultAssignment;
+        Set<Object[]> resultAssignment = new HashSet();
+        long tempPeriod = codingBootcamp.getEND_DATEperTYPE(type).until(
+                codingBootcamp.getSTART_DATE(), ChronoUnit.DAYS);
+        LocalDate tempDeadline = codingBootcamp.getEND_DATEperTYPE(type);
+        for (int i = 0; i < codingBootcamp.getNUMBER_OF_ASSIGNMENTS(); i++) {
+            int j = Math.min(i, assignmentNames.length - 1);
+            Object[] temp = new Object[3];
+            temp[0] = assignmentNames[j][0];
+            temp[1] = assignmentNames[j][1];
+            temp[2] = codingBootcamp.getEND_DATEperTYPE(type);
+            resultAssignment.add(temp);
+            tempDeadline = tempDeadline.plusDays(
+                    tempPeriod / codingBootcamp.getNUMBER_OF_ASSIGNMENTS());
+        }
+        return resultAssignment;
     }
 
     private void createRandomSchoolUnits() {
-        int counter = 0;
-//        for (String stream : codingBootcamp.getSTREAMS()) {
-//            for (String type : codingBootcamp.getTYPES()) {
-//                LocalDate tempEndDate;
-//                tempEndDate = (type.equals(codingBootcamp.getTYPES()[0])
-//                               ? codingBootcamp.getEND_DATE_FULLTIME()
-//                               : codingBootcamp.getEND_DATE_PARTTIME());
-//
-//                codingBootcamp.getSchoolUnits()
-//                        .add(new SchoolUnit(codingBootcamp.getTITLE(),
-//                                            stream, type, codingBootcamp.
-//                                                    getSTART_DATE(),
-//                                            tempEndDate,
-//                                            chooseRandomTENStudents(),
-//                                            codingBootcamp.getTrainers(),
-//                                            createRandomAssignments(type)));
-//                counter++;
-//            }
-
-//    }
-        System.out.println(counter
-                           + " courses have been created");
+        for (String stream : codingBootcamp.getSTREAMS()) {
+            codingBootcamp.getTYPES().forEach(t -> codingBootcamp.
+                    getSchoolUnits().add(new SchoolUnit(
+                            codingBootcamp.getTITLE(), stream, t,
+                            codingBootcamp.getSTART_DATE(),
+                            codingBootcamp.getEND_DATEperTYPE(t),
+                            chooseRandomTENStudents(),
+                            codingBootcamp.getTrainers(),
+                            createRandomAssignments(t))));
+        }
     }
 
     /**
