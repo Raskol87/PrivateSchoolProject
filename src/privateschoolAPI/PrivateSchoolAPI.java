@@ -151,8 +151,9 @@ public class PrivateSchoolAPI {
                                        START_DATE, TYPE_DATE.get(type).
                                                plusMonths(
                                                        1));
+        System.out.println(Arrays.toString(aTemp));
         prototypeAssignments.get(type).add(aTemp);
-        
+        System.out.println(prototypeAssignments.values());
     }
 
 //Various Functional

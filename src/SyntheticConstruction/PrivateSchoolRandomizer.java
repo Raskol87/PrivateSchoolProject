@@ -38,7 +38,8 @@ public class PrivateSchoolRandomizer {
                           "Nikolaos", "Odysseas", "Panagiotis", "Kostas",
                           "George", "Dimitris ", "Iasonas ", "Christos",
                           "Vasilis", "Konstantinos", "Michalis", "Angelos",
-                          "Nikos", "Ilias", "Stathis", "Dimitrios", "Harry"};
+                          "Nikos", "Ilias", "Stathis", "Dimitrios", "Harry",
+                          "Argiris"};
 
     String[] maleLast = {"Kyriakidis", "Despotidis", "Tasoylas", "Vournas",
                          "Balaskas", "Asimakopoulos", "Syrios", "Letsios",
@@ -57,7 +58,7 @@ public class PrivateSchoolRandomizer {
 
     String[] trainerLast = {"Irakleidis", "Karapas", "Zorbadakis", "Nicolaides",
                             "Pasparakis", "Yoda", "Dumbledore", "Splinter",
-                            "ObiWanKenobi"};
+                            "ObiWanKenobi", "Pagidas"};
 
     String[][] assignmentNames = {{"Private School", "Part A"},
                                   {"Private School", "Part B"},

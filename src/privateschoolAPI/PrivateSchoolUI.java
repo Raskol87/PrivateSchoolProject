@@ -78,9 +78,9 @@ public class PrivateSchoolUI {
                 default:
                     System.out.println("Unknown Error");
                     break;
-
             }
         }
+        System.out.println("Program Terminated. Thank you");
     }
 
     //2nd level menu
@@ -96,7 +96,7 @@ public class PrivateSchoolUI {
                             while (isYesOrNo(
                                     "Do you want also to enroll the student in an existing course? [y/n]")) {
                                 SchoolUnit tempObj // user choice
-                                        = (SchoolUnit) chooseFromList(
+                                        = chooseFromList(
                                                 (List<SchoolUnit>) PrivSchool.
                                                         getSchoolUnits());
                                 tempObj.addNewStudent( //gets the last object added to list, which is the object created in the same loop
@@ -298,7 +298,7 @@ public class PrivateSchoolUI {
     //3rd level menu
     private void runCourseMenu() {
         System.out.println("Please select relevant course to view");
-        SchoolUnit inspectedTempCourse = (SchoolUnit) chooseFromList(PrivSchool.
+        SchoolUnit inspectedTempCourse = chooseFromList(PrivSchool.
                 getSchoolUnits());
         while (!this.isExit) {
             System.out.println("You view elements of " + inspectedTempCourse);
@@ -342,7 +342,7 @@ public class PrivateSchoolUI {
                 case 4: //view assignments of student
                     if (!inspectedTempCourse.getListOfCourseStudents().isEmpty()) {
                         do {
-                            Student inspectedTempStudent = (Student) chooseFromList(
+                            Student inspectedTempStudent = chooseFromList(
                                     inspectedTempCourse.
                                             getListOfCourseStudents());
                             System.out.println(
@@ -389,7 +389,7 @@ public class PrivateSchoolUI {
                 case 0: //delete a course
                     System.out.println(
                             "Please select course to delete\nExisting Courses are:");
-                    SchoolUnit coursetoBeRemoved = (SchoolUnit) chooseFromList(
+                    SchoolUnit coursetoBeRemoved = chooseFromList(
                             PrivSchool.getSchoolUnits());
                     if (isYesOrNo(
                             "Removing Course will completely remove all relevant associated data.\nDo you want to proceed? [y/n]")) {
@@ -410,7 +410,7 @@ public class PrivateSchoolUI {
                             Student toBeMoved = (Student) chooseFromList(temp);
                             System.out.println(
                                     "Please select course to enroll to");
-                            SchoolUnit course = (SchoolUnit) chooseFromList(
+                            SchoolUnit course = chooseFromList(
                                     PrivSchool.getSchoolUnits());
                             course.addNewStudent(toBeMoved);
                         } while (isYesOrNo(
@@ -472,7 +472,7 @@ public class PrivateSchoolUI {
     //3rd level menu
     private void runCourseModMenu() {
         System.out.println("Please select relevant course to modify");
-        SchoolUnit inspectedTempCourse = (SchoolUnit) chooseFromList(PrivSchool.
+        SchoolUnit inspectedTempCourse = chooseFromList(PrivSchool.
                 getSchoolUnits());
         while (!this.isExit) {
             System.out.println("You view elements of " + inspectedTempCourse);
@@ -513,7 +513,7 @@ public class PrivateSchoolUI {
                                 "Do you want to assign already stored trainer? [y/n]")) {
                             if (!PrivSchool.getTrainers().isEmpty()) {
                                 System.out.println("Available trainers are: ");
-                                Trainer tempTrainer = (Trainer) chooseFromList(
+                                Trainer tempTrainer = chooseFromList(
                                         PrivSchool.getTrainers());
                                 inspectedTempCourse.addTrainer(tempTrainer);
                             } else {
@@ -565,7 +565,7 @@ public class PrivateSchoolUI {
     private void runStudentModMenu(SchoolUnit inspectedTempCourse) {
         System.out.println("You view elements of " + inspectedTempCourse);
         System.out.println("Please select relevant student to modify");
-        Student inspectedTempStudent = (Student) chooseFromList(
+        Student inspectedTempStudent = chooseFromList(
                 inspectedTempCourse.getListOfCourseStudents());
         while (!this.isExit) {
             System.out.println("You view elements of " + inspectedTempCourse);
@@ -815,7 +815,7 @@ public class PrivateSchoolUI {
         return option;
     }
 
-    private <T> Object chooseFromList(List<T> list) {
+    private <T> T chooseFromList(List<T> list) {
         if (!list.isEmpty()) {
             System.out.println(
                     "Please select the relevant number.\nExisting entries to choose are : ");

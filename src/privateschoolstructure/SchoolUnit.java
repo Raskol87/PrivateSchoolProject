@@ -45,19 +45,19 @@ public class SchoolUnit extends Course {
 
     //Builders
     private ArrayList<Assignment> buildListOfAssignments(Student st) {
-//        System.out.println("I start a buildAssign");
+        System.out.println("I start a buildAssign");
         ArrayList<Assignment> tempList = new ArrayList();
-//        System.out.println(this.prototypeAssignments.size());
+        System.out.println(this.prototypeAssignments.size());
         for (Object[] assignment : this.prototypeAssignments) {
 
             Assignment tempAssignment = new Assignment((String) assignment[0],
                     (String) assignment[1], (LocalDate) assignment[2], st);
             tempList.add(tempAssignment);
             this.assignments.add(tempAssignment);
-//            System.out.println("I put an assign "+tempAssignment);
-//            System.out.println("List is "+tempAssignment);
+            System.out.println("I put an assign "+tempAssignment);
+            System.out.println("List is "+tempAssignment);
         }
-//        System.out.println("I finish");
+        System.out.println("I finish");
         return tempList;
     }
 
