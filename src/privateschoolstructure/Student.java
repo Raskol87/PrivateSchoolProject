@@ -22,12 +22,13 @@ public final class Student implements Comparable<Student> {
     private LocalDate dateOfBirth;
     private float tuitionFees;
     private static int instantiationCounter; //a static counter of objects potentially used as an id number also.
-    private int id;
+    private int id = 700000;
 
     //Constructors
-    public Student(String firstName, String lastName, LocalDate dateOfBirth, float tuitionFees) {
+    public Student(String firstName, String lastName, LocalDate dateOfBirth,
+                   float tuitionFees) {
         instantiationCounter++;
-        id = instantiationCounter;
+        id += instantiationCounter;
         this.firstName = firstName;
         this.lastName = lastName;
         this.dateOfBirth = dateOfBirth;
@@ -37,15 +38,15 @@ public final class Student implements Comparable<Student> {
     @Override
     public String toString() {
         return "Student : " + lastName + " " + firstName + ", born on : "
-                + dateOfBirth + ", fees agreed : " + tuitionFees + "\u20AC, [id=" + id + ']';
+               + dateOfBirth + ", fees agreed : " + tuitionFees + "\u20AC, [id=" + id + ']';
     }
 
     @Override
     public int compareTo(Student o) {
         int compareResult = this.lastName.compareTo(o.lastName);
         return compareResult == 0
-                ? this.firstName.compareTo(o.firstName)
-                : compareResult;
+               ? this.firstName.compareTo(o.firstName)
+               : compareResult;
     }
 
     @Override
@@ -71,7 +72,8 @@ public final class Student implements Comparable<Student> {
             return false;
         }
         final Student other = (Student) obj;
-        if (Float.floatToIntBits(this.tuitionFees) != Float.floatToIntBits(other.tuitionFees)) {
+        if (Float.floatToIntBits(this.tuitionFees) != Float.floatToIntBits(
+                other.tuitionFees)) {
             return false;
         }
         if (this.id != other.id) {
@@ -122,12 +124,7 @@ public final class Student implements Comparable<Student> {
         this.tuitionFees = tuitionFees;
     }
 
-    public int getId() {
-        return id;
-    }
-
     public static int getInstantiationCounter() {
         return instantiationCounter;
     }
-
 }

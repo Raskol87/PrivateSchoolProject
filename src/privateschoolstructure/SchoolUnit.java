@@ -9,7 +9,7 @@ import java.util.*;
 /**
  * Scope of class is to: 1.Store data of Set of Students (enrolled in course),
  * List of Trainers, Map of "connecting" a List of Assignments to each Student.
- * 2. Build necessary Assignements
+ * 2. Build necessary Assignments
  *
  * @since 01/01/2020
  * @author kkyriakidis
@@ -24,8 +24,9 @@ public class SchoolUnit extends Course {
 
     //Constructors
     public SchoolUnit(String title, String stream, String type,
-            LocalDate start_date, LocalDate end_date, Set<Student> students,
-            List<Trainer> trainers, Set prototypeAssignments) {
+                      LocalDate start_date, LocalDate end_date,
+                      Set<Student> students,
+                      List<Trainer> trainers, Set prototypeAssignments) {
         super(title, stream, type, start_date, end_date);
         this.trainers = new ArrayList(trainers);
         this.prototypeAssignments = new HashSet(prototypeAssignments);
@@ -36,7 +37,7 @@ public class SchoolUnit extends Course {
     }
 
     public SchoolUnit(String title, String stream, String type,
-            LocalDate start_date, LocalDate end_date) {
+                      LocalDate start_date, LocalDate end_date) {
         super(title, stream, type, start_date, end_date);
         this.trainers = new ArrayList();
         this.prototypeAssignments = new HashSet();
@@ -51,11 +52,13 @@ public class SchoolUnit extends Course {
         for (Object[] assignment : this.prototypeAssignments) {
 
             Assignment tempAssignment = new Assignment((String) assignment[0],
-                    (String) assignment[1], (LocalDate) assignment[2], st);
+                                                       (String) assignment[1],
+                                                       (LocalDate) assignment[2],
+                                                       st);
             tempList.add(tempAssignment);
             this.assignments.add(tempAssignment);
-            System.out.println("I put an assign "+tempAssignment);
-            System.out.println("List is "+tempAssignment);
+            System.out.println("I put an assign " + tempAssignment);
+            System.out.println("List is " + tempAssignment);
         }
         System.out.println("I finish");
         return tempList;
@@ -80,7 +83,7 @@ public class SchoolUnit extends Course {
             if (!studentAssignments.get(st).isEmpty()) {
                 for (Assignment Ass : studentAssignments.get(st)) {
                     if ((startWeek.compareTo(Ass.getDeadline()) <= 0)
-                            && (endWeek.compareTo(Ass.getDeadline()) >= 0)) {
+                        && (endWeek.compareTo(Ass.getDeadline()) >= 0)) {
                         checkStudent = true;
                     }
                 }
@@ -123,7 +126,8 @@ public class SchoolUnit extends Course {
             this.prototypeAssignments = new HashSet(prototypeAssignments);
             if (!this.studentAssignments.keySet().isEmpty()) {
                 for (Student student : this.studentAssignments.keySet()) {
-                    studentAssignments.put(student, buildListOfAssignments(student));
+                    studentAssignments.put(student, buildListOfAssignments(
+                                           student));
                 }
             }
         } else {
@@ -157,7 +161,7 @@ public class SchoolUnit extends Course {
             this.trainers = new ArrayList(trainers);
         } else {
             System.out.println("List of trainers already initialized. "
-                    + "\n Potential loss of data from bulk operation. Action NOT performed");
+                               + "\n Potential loss of data from bulk operation. Action NOT performed");
         }
     }
 
@@ -179,7 +183,8 @@ public class SchoolUnit extends Course {
      * or lists.
      *
      */
-    public void addNewAssignment(Student st, String title, String description, LocalDate deadline) {
+    public void addNewAssignment(Student st, String title, String description,
+                                 LocalDate deadline) {
         Assignment ass;
         if (studentAssignments.containsKey(st)) {
             ass = new Assignment(title, description, deadline, st);

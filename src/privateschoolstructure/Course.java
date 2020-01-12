@@ -11,7 +11,7 @@ import java.time.LocalDate;
  * @author kkyriakidis
  * @version 0.1 (alpha)
  */
-public class Course {
+public class Course implements Comparable<Course> {
 
     //<editor-fold defaultstate="collapsed" desc="instance variables">
     /*
@@ -27,11 +27,12 @@ public class Course {
     private LocalDate start_date;
     private LocalDate end_date;
     private static int instantiationCounter; //a static counter of objects potentially used as an id number also.
-    private int id;
+    private int id = 9000;
 
-    public Course(String title, String stream, String type, LocalDate start_date, LocalDate end_date) {
+    public Course(String title, String stream, String type, LocalDate start_date,
+                  LocalDate end_date) {
         instantiationCounter++;
-        id = instantiationCounter;
+        id += instantiationCounter;
         this.title = title;
         this.stream = stream;
         this.type = type;
@@ -43,6 +44,11 @@ public class Course {
     @Override
     public String toString() {
         return "Course : " + title + " " + stream + " " + type + ", starts on " + start_date + " and ends on " + end_date;
+    }
+
+    @Override
+    public int compareTo(Course o) {
+        return (this.id - o.id);
     }
 
     //Getters and Setters
@@ -86,8 +92,7 @@ public class Course {
         this.end_date = end_date;
     }
 
-    public int getId() {
-        return id;
+    public static int getInstantiationCounter() {
+        return instantiationCounter;
     }
-
 }

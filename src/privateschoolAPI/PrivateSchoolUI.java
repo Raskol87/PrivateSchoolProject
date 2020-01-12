@@ -15,7 +15,7 @@ import privateschoolstructure.Student;
 import privateschoolstructure.Trainer;
 
 /**
- * Scope of Class is to "print" a "user inteface" on the console, in order to
+ * Scope of Class is to "print" a "user interface" on the console, in order to
  * guide user to provide necessary input and manipulate an Object of
  * PrivateSchool. Selection of objects, validation of options and printing of
  * results should be done through this class
@@ -30,7 +30,7 @@ import privateschoolstructure.Trainer;
 public class PrivateSchoolUI {
 
     private final Scanner sc = new Scanner(System.in).useDelimiter("\\n");
-    private PrivateSchoolAPI PrivSchool;
+    private final PrivateSchoolAPI PrivSchool;
     private boolean isExit = false;
 
     //Constructor
@@ -65,12 +65,8 @@ public class PrivateSchoolUI {
                     runInspectionMenu();
                     break;
                 case 3:
-                    if (PrivSchool.getSchoolUnits().isEmpty())
-                        System.out.println(
-                                "No courses created. Create first school elements to proceed to modifications");  //check of list initialization
-                    else {
+                    if (isNotEmpty(PrivSchool.getSchoolUnits()))
                         runModificationMenu();
-                    }
                     break;
                 case -100:
                     this.isExit = true;
@@ -207,32 +203,18 @@ public class PrivateSchoolUI {
         while (!this.isExit) {
             printInspectionMenu();
             int switchOption = chooseOption("[1 2 3 4 5 6 7]{1}|exit|back");
-            ArrayList temp;
             switch (switchOption) {
                 case 1: //view students
-                    if (!PrivSchool.getStudents().isEmpty()) {
-                        temp = new ArrayList(PrivSchool.getStudents());
-                        Collections.sort(temp); ///sorted copy
-                        printList(temp);
-                    } else {
-                        System.out.println("No students found");
-                    }
+                    if (isNotEmpty(PrivSchool.getStudents()))
+                        printSortedList(PrivSchool.getStudents());
                     break;
                 case 2: //view courses
-                    if (!PrivSchool.getSchoolUnits().isEmpty()) {
-                        printList(PrivSchool.getSchoolUnits());
-                    } else {
-                        System.out.println("No courses found");
-                    }
+                    if (isNotEmpty(PrivSchool.getSchoolUnits()))
+                        printSortedList(PrivSchool.getSchoolUnits());
                     break;
                 case 3: //view trainers
-                    if (!PrivSchool.getTrainers().isEmpty()) {
-                        temp = new ArrayList(PrivSchool.getTrainers());
-                        Collections.sort(temp);
-                        printList(temp);
-                    } else {
-                        System.out.println("No trainers found");
-                    }
+                    if (isNotEmpty(PrivSchool.getTrainers()))
+                        printSortedList(PrivSchool.getTrainers());
                     break;
                 case 4: //course view sub-menu
                     if (!PrivSchool.getSchoolUnits().isEmpty()) {
@@ -246,36 +228,29 @@ public class PrivateSchoolUI {
                     for (SchoolUnit course : PrivSchool.getSchoolUnits()) {
                         tempAssignmentList.addAll(course.getAssignments());
                     }
-                    if (!tempAssignmentList.isEmpty()) {
-                        Collections.sort(tempAssignmentList); //copy sorted
-                        printList(tempAssignmentList);
-                    } else {
-                        System.out.println("No assignments found");
-                    }
+                    if (isNotEmpty(tempAssignmentList))
+                        printSortedList(tempAssignmentList);
                     break;
                 case 6://view students enrolled in two or more courses
-                    if (!PrivSchool.getStudents().isEmpty()) {
+                    if (isNotEmpty(PrivSchool.getStudents())) {
                         if (!PrivSchool.findMultipleEnrolledStudents().isEmpty()) {
                             printList(PrivSchool.findMultipleEnrolledStudents());
                         } else {
                             System.out.println(
                                     "No students enrolled in multi courses");
                         }
-                    } else {
-                        System.out.println("No students found");
                     }
                     break;
                 case 7: //students with due assignment
                     System.out.println(
                             "Please provide date in order to check during "
                             + "this date's working week which student have assignment in due");
-                    ArrayList tempStudents = PrivSchool.
-                            studentsWithDueThisWeek();
-                    if (!tempStudents.isEmpty()) {
-                        Collections.sort(tempStudents); //copy sorted-shallow
+                    if (!PrivSchool.
+                            studentsWithDueThisWeek().isEmpty()) {
                         System.out.println(
                                 "Students with assignment in due this week are:");
-                        printList(tempStudents);
+                        printSortedList(PrivSchool.
+                                studentsWithDueThisWeek());
                     } else {
                         System.out.println(
                                 "No students with pending assignments during the particular week");
@@ -304,63 +279,41 @@ public class PrivateSchoolUI {
             System.out.println("You view elements of " + inspectedTempCourse);
             printCourseMenu();
             int switchOption = chooseOption("[0 1 2 3 4]{1}|exit|back|main");
-            ArrayList tempList;
             switch (switchOption) {
                 case 0:
                     runCourseMenu();
                     break;
                 case 1: //view Students of course
-                    if (!inspectedTempCourse.getListOfCourseStudents().isEmpty()) {
-                        tempList = new ArrayList(inspectedTempCourse.
+                    if (isNotEmpty(inspectedTempCourse.getListOfCourseStudents()))
+                        printSortedList(inspectedTempCourse.
                                 getListOfCourseStudents());
-                        Collections.sort(tempList);//sorted copy
-                        printList(tempList);
-                    } else {
-                        System.out.println("No students");
-                    }
                     break;
                 case 2: //view assignments of course
-                    if (!inspectedTempCourse.getAssignments().isEmpty()) {
-                        tempList = new ArrayList(inspectedTempCourse.
+                    if (isNotEmpty(inspectedTempCourse.getAssignments()))
+                        printSortedList(inspectedTempCourse.
                                 getAssignments());
-                        Collections.sort(tempList);///sorted copy
-                        printList(inspectedTempCourse.getAssignments());
-                    } else {
-                        System.out.println("No assignments");
-                    }
                     break;
                 case 3: //view trainers of course
-                    if (!inspectedTempCourse.getTrainers().isEmpty()) {
-                        tempList = new ArrayList(inspectedTempCourse.
-                                getTrainers());
-                        Collections.sort(tempList);///sorted copy
-                        printList(tempList);
-                    } else {
-                        System.out.println("No trainers");
-                    }
+                    if (isNotEmpty(inspectedTempCourse.getTrainers()))
+                        printSortedList(inspectedTempCourse.getTrainers());
                     break;
                 case 4: //view assignments of student
-                    if (!inspectedTempCourse.getListOfCourseStudents().isEmpty()) {
+                    if (isNotEmpty(inspectedTempCourse.getListOfCourseStudents())) {
                         do {
                             Student inspectedTempStudent = chooseFromList(
                                     inspectedTempCourse.
                                             getListOfCourseStudents());
                             System.out.println(
                                     "You view assignments of " + inspectedTempStudent);
-                            if (!inspectedTempCourse.getMapOfAssignments().get(
-                                    inspectedTempStudent).isEmpty()) {
-                                tempList = new ArrayList(inspectedTempCourse.
+                            if (isNotEmpty(inspectedTempCourse.
+                                    getMapOfAssignments().get(
+                                            inspectedTempStudent))) {
+                                printSortedList(inspectedTempCourse.
                                         getMapOfAssignments().get(
                                                 inspectedTempStudent));
-                                Collections.sort(tempList);
-                                printList(tempList);
-                            } else {
-                                System.out.println("No assignments");
                             }
                         } while (isYesOrNo(
                                 "Do you want to view another student's assignments? [y/n]"));
-                    } else {
-                        System.out.println("No students");
                     }
                     break;
                 case -1:
@@ -384,7 +337,6 @@ public class PrivateSchoolUI {
         while (!this.isExit) {
             printModificationMenu();
             int switchOption = chooseOption("[0 1 2 3 4]{1}|exit|back");
-            ArrayList temp;
             switch (switchOption) {
                 case 0: //delete a course
                     System.out.println(
@@ -401,13 +353,12 @@ public class PrivateSchoolUI {
                     }
                     break;
                 case 1: //Enroll student to course
-                    if (!PrivSchool.getStudents().isEmpty()) {
+                    if (isNotEmpty(PrivSchool.getStudents())) {
                         do {
                             System.out.println(
                                     "Please select student to enroll to course \nExisting Students are:");
-                            temp = new ArrayList(PrivSchool.getStudents());
-                            Collections.sort(temp);//sorted shallow
-                            Student toBeMoved = (Student) chooseFromList(temp);
+                            Student toBeMoved = chooseFromListSorted(PrivSchool.
+                                    getStudents());
                             System.out.println(
                                     "Please select course to enroll to");
                             SchoolUnit course = chooseFromList(
@@ -415,43 +366,30 @@ public class PrivateSchoolUI {
                             course.addNewStudent(toBeMoved);
                         } while (isYesOrNo(
                                 "Do you want to enroll another student?[y/n]"));
-                    } else {
-                        System.out.println("No students stored");
                     }
                     break;
-
                 case 2: //completely removing a student from bootcamp
-                    if (!PrivSchool.getStudents().isEmpty()) {
+                    if (isNotEmpty(PrivSchool.getStudents())) {
                         do {
                             System.out.println("Please select student");
-                            temp = new ArrayList(PrivSchool.getStudents());
-                            Collections.sort(temp);//sorted shallow
-                            Student studentToBeRemoved = (Student) chooseFromList(
-                                    temp);
+                            Student studentToBeRemoved = chooseFromListSorted(
+                                    PrivSchool.getStudents());
                             PrivSchool.removeStudent(studentToBeRemoved);
                         } while (isYesOrNo(
                                 "Do you want to delete another student?[y/n]"));
-                    } else {
-                        System.out.println("No students stored");
                     }
                     break;
-
                 case 3: //completely delete trainer
-                    if (!PrivSchool.getTrainers().isEmpty()) {
+                    if (isNotEmpty(PrivSchool.getTrainers())) {
                         do {
                             System.out.println("Please select trainer");
-                            temp = new ArrayList(PrivSchool.getTrainers());
-                            Collections.sort(temp);//sorted shallow
-                            Trainer trainertToBeRemoved = (Trainer) chooseFromList(
-                                    temp);
+                            Trainer trainertToBeRemoved = chooseFromList(
+                                    PrivSchool.getTrainers());
                             PrivSchool.removeTrainer(trainertToBeRemoved);
                         } while (isYesOrNo(
                                 "Do you want to delete another trainer?[y/n]"));
-                    } else {
-                        System.out.println("No trainers stored");
                     }
                     break;
-
                 case 4: //course sub-menu
                     runCourseModMenu();
                     break;
@@ -478,34 +416,26 @@ public class PrivateSchoolUI {
             System.out.println("You view elements of " + inspectedTempCourse);
             printCourseModMenu();
             int switchOption = chooseOption("[0 1 2 3 4]{1}|exit|back|main");
-            ArrayList temp;
             switch (switchOption) {
                 case 0:
                     runCourseModMenu();
                     break;
                 case 1: //Removing a student from the course
-                    if (!inspectedTempCourse.getListOfCourseStudents().isEmpty()) {
+                    if (isNotEmpty(inspectedTempCourse.getListOfCourseStudents())) {
                         do {
                             System.out.println("Please select student");
-                            temp = new ArrayList(inspectedTempCourse.
-                                    getListOfCourseStudents());
-                            Collections.sort(temp);//sorted shallow
-                            Student studentToBeRemoved = (Student) chooseFromList(
-                                    temp);
+                            Student studentToBeRemoved = chooseFromListSorted(
+                                    inspectedTempCourse.
+                                            getListOfCourseStudents());
                             inspectedTempCourse.
                                     removeStudent(studentToBeRemoved);
                         } while (isYesOrNo(
                                 "Do you want to delete another student?[y/n]"));
-                    } else {
-                        System.out.println("No students enrolled in course");
                     }
                     break;
                 case 2: //student sub-menu
-                    if (!inspectedTempCourse.getListOfCourseStudents().isEmpty()) {
+                    if (isNotEmpty(inspectedTempCourse.getListOfCourseStudents()))
                         runStudentModMenu(inspectedTempCourse);
-                    } else {
-                        System.out.println("No students enrolled in course");
-                    }
                     break;
                 case 3: //assign trainer to course
                     do {
@@ -529,20 +459,15 @@ public class PrivateSchoolUI {
                             "Do you want to assign another trainer?[y/n]"));
                     break;
                 case 4: //remove trainer from course
-                    if (!inspectedTempCourse.getTrainers().isEmpty()) {
+                    if (isNotEmpty(inspectedTempCourse.getTrainers())) {
                         do {
                             System.out.println("Please select trainer");
-                            temp = new ArrayList(inspectedTempCourse.
-                                    getTrainers());
-                            Collections.sort(temp);//sorted copy
-                            Trainer trainerToBeRemoved = (Trainer) chooseFromList(
-                                    temp);
+                            Trainer trainerToBeRemoved = chooseFromListSorted(
+                                    inspectedTempCourse.getTrainers());
                             inspectedTempCourse.
                                     removeTrainer(trainerToBeRemoved);
                         } while (isYesOrNo(
                                 "Do you want to remove another trainer?[y/n]"));
-                    } else {
-                        System.out.println("No trainers stored");
                     }
                     break;
                 case -1:
@@ -572,29 +497,25 @@ public class PrivateSchoolUI {
             System.out.println("You view elements of " + inspectedTempStudent);
             printStudentModMenu();
             int switchOption = chooseOption("[0 1 2 3]{1}|exit|back|main");
-            ArrayList temp;
             Assignment tempAss;
             switch (switchOption) {
                 case 0:
                     runStudentModMenu(inspectedTempCourse);
                     break;
                 case 1: //assign marks to student-assignment
-                    if (!inspectedTempCourse.getMapOfAssignments().get(
-                            inspectedTempStudent).isEmpty()) {
+                    if (isNotEmpty(inspectedTempCourse.getMapOfAssignments().
+                            get(
+                                    inspectedTempStudent))) {
                         do {
                             System.out.println(
                                     "Please select assignment to assign marks");
-                            temp = new ArrayList(inspectedTempCourse.
+                            tempAss = chooseFromListSorted(inspectedTempCourse.
                                     getMapOfAssignments().get(
                                             inspectedTempStudent));
-                            Collections.sort(temp);//sorted shallow
-                            tempAss = (Assignment) chooseFromList(temp);
                             PrivSchool.gradeStudent(inspectedTempStudent,
                                                     inspectedTempCourse, tempAss);
                         } while (isYesOrNo(
                                 "Do you want to assign mark to another assignment?[y/n]"));
-                    } else {
-                        System.out.println("No assignments stored");
                     }
                     break;
                 case 2: //add new assignment to student
@@ -606,22 +527,19 @@ public class PrivateSchoolUI {
                             "Do you want to add another assignment?[y/n]"));
                     break;
                 case 3: //delete assignment from student
-                    if (!inspectedTempCourse.getMapOfAssignments().get(
-                            inspectedTempStudent).isEmpty()) {
+                    if (isNotEmpty(inspectedTempCourse.getMapOfAssignments().
+                            get(
+                                    inspectedTempStudent))) {
                         do {
                             System.out.println(
                                     "Please select assignment to delete");
-                            temp = new ArrayList(inspectedTempCourse.
+                            tempAss = chooseFromListSorted(inspectedTempCourse.
                                     getMapOfAssignments().get(
                                             inspectedTempStudent));
-                            Collections.sort(temp);//sorted shallow
-                            tempAss = (Assignment) chooseFromList(temp);
                             inspectedTempCourse.getMapOfAssignments().get(
                                     inspectedTempStudent).remove(tempAss);
                         } while (isYesOrNo(
                                 "Do you want to delete another assignment?[y/n]"));
-                    } else {
-                        System.out.println("No assignments stored");
                     }
                     break;
                 case -1:
@@ -770,6 +688,12 @@ public class PrivateSchoolUI {
         }
     }
 
+    private <T> void printSortedList(List<T> list) {
+        List tempList = new ArrayList(list);
+        Collections.sort(tempList);
+        printList(tempList);
+    }
+
     //Choices
     private boolean isYesOrNo(String question) {
         System.out.println(question);
@@ -816,14 +740,25 @@ public class PrivateSchoolUI {
     }
 
     private <T> T chooseFromList(List<T> list) {
-        if (!list.isEmpty()) {
+        if (isNotEmpty(list)) {
             System.out.println(
                     "Please select the relevant number.\nExisting entries to choose are : ");
             printList(list);
             int option = chooseOption(buildRegex(list.size()));
             return list.get(option - 1);
-        } else {
-            System.out.println("List is empty");
+        }
+        return null; //not used hopefully!
+    }
+
+    private <T> T chooseFromListSorted(List<T> list) {
+        if (isNotEmpty(list)) {
+            System.out.println(
+                    "Please select the relevant number.\nExisting entries to choose are : ");
+            ArrayList tempList = new ArrayList(list);
+            Collections.sort(tempList);
+            printList(tempList);
+            int option = chooseOption(buildRegex(list.size()));
+            return (T) tempList.get(option - 1);
         }
         return null; //not used hopefully!
     }
@@ -841,4 +776,12 @@ public class PrivateSchoolUI {
         return regex.toString();
     }
 
+    private <T> boolean isNotEmpty(List<T> list) {
+        if (list.isEmpty()) {
+            System.out.println("List Empty \nNo data found");
+            return false;
+        } else {
+            return true;
+        }
+    }
 }
