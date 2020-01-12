@@ -178,8 +178,8 @@ public class PrivateSchoolAPI {
      */
     protected List<Student> findMultipleEnrolledStudents(
             SchoolUnit courseA, SchoolUnit courseB) {
-        List<Student> temp = new ArrayList(courseA.getListOfCourseStudents());
-        temp.retainAll(courseB.getListOfCourseStudents());
+        List<Student> temp = new ArrayList(courseA.getStudents());
+        temp.retainAll(courseB.getStudents());
         return temp;
     }
 

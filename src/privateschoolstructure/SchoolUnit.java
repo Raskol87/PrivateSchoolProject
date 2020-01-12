@@ -19,7 +19,6 @@ public class SchoolUnit extends Course {
 
     private List<Trainer> trainers;
     private Set<Object[]> prototypeAssignments;
-    private List<Assignment> assignments = new ArrayList();
     private Map<Student, ArrayList<Assignment>> studentAssignments = new TreeMap();
 
     //Constructors
@@ -46,35 +45,18 @@ public class SchoolUnit extends Course {
 
     //Builders
     private ArrayList<Assignment> buildListOfAssignments(Student st) {
-        System.out.println("I start a buildAssign");
         ArrayList<Assignment> tempList = new ArrayList();
-        System.out.println(this.prototypeAssignments.size());
         for (Object[] assignment : this.prototypeAssignments) {
-
             Assignment tempAssignment = new Assignment((String) assignment[0],
                                                        (String) assignment[1],
                                                        (LocalDate) assignment[2],
                                                        st);
             tempList.add(tempAssignment);
-            this.assignments.add(tempAssignment);
-            System.out.println("I put an assign " + tempAssignment);
-            System.out.println("List is " + tempAssignment);
         }
-        System.out.println("I finish");
         return tempList;
     }
 
     //Various Functional
-    public void removeStudent(Student st) {
-        studentAssignments.remove(st);
-        System.out.println(st + " removed from " + this);
-    }
-
-    public void removeTrainer(Trainer tr) {
-        trainers.remove(tr);
-        System.out.println(tr + " removed from " + this);
-    }
-
     public boolean isStudentWithDueThisWeek(Student st, LocalDate checkDate) {
         boolean checkStudent = false;
         LocalDate startWeek = findMinMaxForWeek(checkDate)[0];
@@ -102,58 +84,9 @@ public class SchoolUnit extends Course {
         return startEndDate;
     }
 
-    //Getters and Setters
-    public List<Student> getListOfCourseStudents() {
-
-        return new ArrayList(studentAssignments.keySet());
-    }
-
-    public void setStudents(List<Student> students) {
-
-        if (!this.studentAssignments.keySet().isEmpty()) {
-            if (!this.prototypeAssignments.isEmpty()) {
-                for (Student st : students) {
-                    this.studentAssignments.put(st, buildListOfAssignments(st));
-                }
-            }
-        } else {
-            System.out.println("Potential loss of Data. Action NOT executed");
-        }
-    }
-
-    public void setPrototypeAssignments(Set<Object[]> prototypeAssignments) {
-        if (this.prototypeAssignments.isEmpty()) {
-            this.prototypeAssignments = new HashSet(prototypeAssignments);
-            if (!this.studentAssignments.keySet().isEmpty()) {
-                for (Student student : this.studentAssignments.keySet()) {
-                    studentAssignments.put(student, buildListOfAssignments(
-                                           student));
-                }
-            }
-        } else {
-            System.out.println("Potential data loss. Action NOT executed");
-        }
-    }
-
-    public void addNewStudent(Student st) {
-        if (!studentAssignments.containsKey(st)) {
-            if (!this.prototypeAssignments.isEmpty()) {
-                this.studentAssignments.put(st, buildListOfAssignments(st));
-            } else {
-                this.studentAssignments.put(st, null);
-            }
-            System.out.println(st + " enrolled to " + this);
-        } else {
-            System.out.println("Student already enrolled");
-        }
-    }
-
-    public Map<Student, ArrayList<Assignment>> getMapOfAssignments() {
-        return studentAssignments;
-    }
-
-    public List<Assignment> getAssignments() {
-        return assignments;
+//Mutators and Accessors
+    public List<Trainer> getTrainers() {
+        return trainers;
     }
 
     public void setTrainers(List<Trainer> trainers) {
@@ -165,10 +98,6 @@ public class SchoolUnit extends Course {
         }
     }
 
-    public List<Trainer> getTrainers() {
-        return trainers;
-    }
-
     public void addTrainer(Trainer tr) {
         if (this.trainers.contains(tr)) {
             System.out.println("Trainer already assigned");
@@ -176,6 +105,79 @@ public class SchoolUnit extends Course {
             this.trainers.add(tr);
             System.out.println(tr + " added to" + this);
         }
+    }
+
+    public void removeTrainer(Trainer tr) {
+        trainers.remove(tr);
+        System.out.println(tr + " removed from " + this);
+    }
+
+    public List<Student> getStudents() {
+
+        return new ArrayList(studentAssignments.keySet());
+    }
+
+    public void setStudents(List<Student> students) {
+        if (this.studentAssignments.keySet().isEmpty()) {
+            if (this.prototypeAssignments.isEmpty()) {
+                students.forEach((st) -> {
+                    this.studentAssignments.put(st, null);
+                });
+            } else {
+                students.forEach((st) -> {
+                    this.studentAssignments.put(st, buildListOfAssignments(st));
+                });
+            }
+        } else {
+            System.out.println("Potential loss of Data. Action NOT executed");
+        }
+    }
+
+    public void addNewStudent(Student st) {
+        if (!studentAssignments.containsKey(st)) {
+            if (this.prototypeAssignments.isEmpty()) {
+                this.studentAssignments.put(st, null);
+            } else {
+                this.studentAssignments.put(st, buildListOfAssignments(st));
+            }
+            System.out.println(st + " enrolled to " + this);
+        } else {
+            System.out.println("Student already enrolled");
+        }
+    }
+
+    public void removeStudent(Student st) {
+        studentAssignments.remove(st);
+        System.out.println(st + " removed from " + this);
+    }
+
+    public Map<Student, ArrayList<Assignment>> getMapOfAssignments() {
+        return studentAssignments;
+    }
+
+    public List<Assignment> getAssignments() {
+        List<Assignment> tempList = new ArrayList();
+        studentAssignments.values().forEach(aL -> tempList.addAll(aL));
+        return tempList;
+    }
+
+    public void setPrototypeAssignments(Set<Object[]> prototypeAssignments) {
+        if (this.prototypeAssignments.isEmpty()) {
+            this.prototypeAssignments = new HashSet(prototypeAssignments);
+            if (!this.studentAssignments.keySet().isEmpty()) {
+                this.studentAssignments.keySet().forEach((st) -> {
+                    studentAssignments.put(st, buildListOfAssignments(st));
+                });
+            }
+        } else {
+            System.out.println("Potential data loss. Action NOT executed");
+        }
+    }
+
+    public void addPrototypeAssignment() {
+    }
+
+    public void removePrototypeAssignment() {
     }
 
     /**
@@ -189,6 +191,19 @@ public class SchoolUnit extends Course {
         if (studentAssignments.containsKey(st)) {
             ass = new Assignment(title, description, deadline, st);
             studentAssignments.get(st).add(ass);
+        } else {
+            System.out.println("Student does not exist to course");
+        }
+    }
+
+    public void removeAssignment(Student st, Assignment ass) {
+        if (studentAssignments.containsKey(st)) {
+            if (studentAssignments.get(st).contains(ass)) {
+                studentAssignments.get(st).remove(ass);
+            } else {
+                System.out.println("Assignment does not exist to " + st.
+                        getLastName() + " " + st.getFirstName());
+            }
         } else {
             System.out.println("Student does not exist to course");
         }

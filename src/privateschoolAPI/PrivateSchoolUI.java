@@ -284,9 +284,8 @@ public class PrivateSchoolUI {
                     runCourseMenu();
                     break;
                 case 1: //view Students of course
-                    if (isNotEmpty(inspectedTempCourse.getListOfCourseStudents()))
-                        printSortedList(inspectedTempCourse.
-                                getListOfCourseStudents());
+                    if (isNotEmpty(inspectedTempCourse.getStudents()))
+                        printSortedList(inspectedTempCourse.getStudents());
                     break;
                 case 2: //view assignments of course
                     if (isNotEmpty(inspectedTempCourse.getAssignments()))
@@ -298,11 +297,10 @@ public class PrivateSchoolUI {
                         printSortedList(inspectedTempCourse.getTrainers());
                     break;
                 case 4: //view assignments of student
-                    if (isNotEmpty(inspectedTempCourse.getListOfCourseStudents())) {
+                    if (isNotEmpty(inspectedTempCourse.getStudents())) {
                         do {
                             Student inspectedTempStudent = chooseFromList(
-                                    inspectedTempCourse.
-                                            getListOfCourseStudents());
+                                    inspectedTempCourse.getStudents());
                             System.out.println(
                                     "You view assignments of " + inspectedTempStudent);
                             if (isNotEmpty(inspectedTempCourse.
@@ -421,12 +419,11 @@ public class PrivateSchoolUI {
                     runCourseModMenu();
                     break;
                 case 1: //Removing a student from the course
-                    if (isNotEmpty(inspectedTempCourse.getListOfCourseStudents())) {
+                    if (isNotEmpty(inspectedTempCourse.getStudents())) {
                         do {
                             System.out.println("Please select student");
                             Student studentToBeRemoved = chooseFromListSorted(
-                                    inspectedTempCourse.
-                                            getListOfCourseStudents());
+                                    inspectedTempCourse.getStudents());
                             inspectedTempCourse.
                                     removeStudent(studentToBeRemoved);
                         } while (isYesOrNo(
@@ -434,7 +431,7 @@ public class PrivateSchoolUI {
                     }
                     break;
                 case 2: //student sub-menu
-                    if (isNotEmpty(inspectedTempCourse.getListOfCourseStudents()))
+                    if (isNotEmpty(inspectedTempCourse.getStudents()))
                         runStudentModMenu(inspectedTempCourse);
                     break;
                 case 3: //assign trainer to course
@@ -491,7 +488,7 @@ public class PrivateSchoolUI {
         System.out.println("You view elements of " + inspectedTempCourse);
         System.out.println("Please select relevant student to modify");
         Student inspectedTempStudent = chooseFromList(
-                inspectedTempCourse.getListOfCourseStudents());
+                inspectedTempCourse.getStudents());
         while (!this.isExit) {
             System.out.println("You view elements of " + inspectedTempCourse);
             System.out.println("You view elements of " + inspectedTempStudent);
