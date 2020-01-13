@@ -129,45 +129,26 @@ public class PrivateSchoolUI {
                     break;
                 case 3: //insert new trainer
                     do {
-                        PrivSchool.buildTrainer();
-                    } while (isYesOrNo(
-                            "Do you want to add additional trainer? [Y/N]"));
-                    if (!PrivSchool.getSchoolUnits().isEmpty()) {
-                        if (isYesOrNo(
-                                "Do you want to assign created trainers to existing courses? [y/n]"
-                                + "\nThis will assign ALL stored trainers to ALL stored courses.")) {
-                            for (SchoolUnit course : PrivSchool.getSchoolUnits()) {
-                                System.out.println(
-                                        "Trainers assigned to " + course);
-                                course.setTrainers(PrivSchool.getTrainers());
+                        Trainer aTrainer = PrivSchool.buildTrainer();
+                        if (!PrivSchool.getSchoolUnits().isEmpty()) {
+                            if (isYesOrNo(
+                                    "Do you want to assign created trainer to existing courses? [y/n]"
+                                    + "\nThis will assign stored trainers to all stored courses.")) {
+                                PrivSchool.getSchoolUnits().forEach(
+                                        course -> course.addTrainer(aTrainer));
                             }
                         }
-                    }
+                    } while (isYesOrNo(
+                            "Do you want to add additional trainer? [Y/N]"));
                     break;
                 case 4: //insert new assignments
                     do {
-                        System.out.println("In this menu you enter assignment "
-                                           + "information \nwhich are the same for each type of "
-                                           + "course and two options of deadline for each type "
-                                           + "of course\nIt is strongly recommended to input "
-                                           + "all assignment information now");
+                        System.out.println("Please enter assignment "
+                                           + "information \n for each type of "
+                                           + "course ");
                         PrivSchool.insertAssignmentInfo();
                     } while (isYesOrNo(
                             "Do you want to add additional assignment info?[y/n]"));
-                    if (isYesOrNo(
-                            "Do you want to insert list of assignment info to stored courses?[y/n]"
-                            + "\nThis will create assignments to all stored courses currently.")) {
-                        for (SchoolUnit course : PrivSchool.getSchoolUnits()) {
-//                            if (course.getType().
-//                                    equals(PrivSchool.getTYPES()[0])) {
-//                                course.setPrototypeAssignments(PrivSchool.
-//                                        getPrototypeAssignments_FullTime());
-//                            } else {
-//                                course.setPrototypeAssignments(PrivSchool.
-//                                        getPrototypeAssignments_PartTime());
-//                            }
-                        }
-                    }
                     break;
                 case -1:
                 case -2:
@@ -319,7 +300,7 @@ public class PrivateSchoolUI {
     private void runModificationMenu() {
         while (!this.isExit) {
             printModificationMenu();
-            int switchOption = chooseOption("[0 1 2 3 4]{1}|exit|back");
+            int switchOption = chooseOption("[0 1 2 3 4 5]{1}|exit|back");
             switch (switchOption) {
                 case 0: //delete a course
                     System.out.println(
@@ -362,7 +343,22 @@ public class PrivateSchoolUI {
                                 "Do you want to delete another student?[y/n]"));
                     }
                     break;
-                case 3: //completely delete trainer
+                case 3: //completely delete assignement [prototype assignment]
+                    do {
+                        System.out.println("Please select type");
+                        String tempType = chooseFromList(PrivSchool.getTYPES().
+                                stream().collect(
+                                        Collectors.toList()));
+                        Object[] tempPrototype = chooseFromList(PrivSchool.
+                                getMapPrototypeAssignmentsType().get(tempType).
+                                stream().collect(Collectors.toList()));
+                        PrivSchool.
+                                removePrototypeAssignment(tempPrototype,
+                                                          tempType);
+                    } while ((isYesOrNo(
+                              "Do you want to delete another assignment?[y/n]")));
+                    break;
+                case 4: //completely delete trainer
                     if (isNotEmpty(PrivSchool.getTrainers())) {
                         do {
                             System.out.println("Please select trainer");
@@ -373,7 +369,7 @@ public class PrivateSchoolUI {
                                 "Do you want to delete another trainer?[y/n]"));
                     }
                     break;
-                case 4: //course sub-menu
+                case 5: //course sub-menu
                     runCourseModMenu();
                     break;
                 case -1:
@@ -423,19 +419,15 @@ public class PrivateSchoolUI {
                     do {
                         if (isYesOrNo(
                                 "Do you want to assign already stored trainer? [y/n]")) {
-                            if (!PrivSchool.getTrainers().isEmpty()) {
+                            if (isNotEmpty(PrivSchool.getTrainers())) {
                                 System.out.println("Available trainers are: ");
                                 Trainer tempTrainer = chooseFromList(
                                         PrivSchool.getTrainers());
                                 inspectedTempCourse.addTrainer(tempTrainer);
-                            } else {
-                                System.out.println("No trainers stored");
                             }
                         } else {
-                            PrivSchool.buildTrainer();
-                            inspectedTempCourse.addTrainer(PrivSchool.
-                                    getTrainers().get(
-                                            PrivSchool.getTrainers().size() - 1));
+                            Trainer aTrainer = PrivSchool.buildTrainer();
+                            inspectedTempCourse.addTrainer(aTrainer);
                         }
                     } while (isYesOrNo(
                             "Do you want to assign another trainer?[y/n]"));
@@ -486,8 +478,7 @@ public class PrivateSchoolUI {
                     break;
                 case 1: //assign marks to student-assignment
                     if (isNotEmpty(inspectedTempCourse.getMapOfAssignments().
-                            get(
-                                    inspectedTempStudent))) {
+                            get(inspectedTempStudent))) {
                         do {
                             System.out.println(
                                     "Please select assignment to assign marks");
@@ -625,9 +616,11 @@ public class PrivateSchoolUI {
         System.out.
                 println("\'1\' for enrolling an existing student to a course");
         System.out.println("\'2\' for completely removing a student");
-        System.out.println("\'3\' for completely deleting a trainer");
+        System.out.println(
+                "\'3\' for completely deleting an assignment from School");
+        System.out.println("\'4\' for completely deleting a trainer");
         System.out.
-                println("\'4\' for entering course sub-menu for more options");
+                println("\'5\' for entering course sub-menu for more options");
         System.out.println("\'back\' for returning to previous Menu");
         System.out.println(
                 "\'exit\' for exiting and stopping the current program");
