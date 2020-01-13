@@ -105,40 +105,25 @@ public class PrivateSchoolUI {
                     break;
                 case 2: //insert new course
                     do {
-                        PrivSchool.buildSchoolUnit();
-                        if (!PrivSchool.getTrainers().isEmpty()) {
-                            if (isYesOrNo(
-                                    "Do you want to add already stored list of trainers to current course? [y/n]")) {
-                                PrivSchool.getSchoolUnits().get(
-                                        (PrivSchool.getSchoolUnits().size() - 1)) //gets the last object added to list, which is the object created in the same loop
-                                        .
-                                        setTrainers(PrivSchool.getTrainers());
-                            }
-                        }
+                        SchoolUnit currentSchoolUnit = PrivSchool.
+                                buildSchoolUnit();
                         if (!PrivSchool.getStudents().isEmpty()) {
                             if (isYesOrNo(
                                     "Do you want to enroll already stored list of students to current course? [y/n]")) {
-                                PrivSchool.getSchoolUnits().get(
-                                        (PrivSchool.getSchoolUnits().size() - 1)) //gets the last object added to list, which is the object created in the same loop
-                                        .
+                                currentSchoolUnit.
                                         setStudents(PrivSchool.getStudents());
                             }
                         }
-                        SchoolUnit tempCourse = PrivSchool.getSchoolUnits().get(
-                                PrivSchool.getSchoolUnits().size() - 1); //gets the last object added to list, which is the object created in the same loop
-                        if (isYesOrNo("Do you want to submit to course "
-                                      + "assignment info -and create assignments- "
-                                      + "that are stored (if created)?[y/n]")) {
-//                            if (tempCourse.getType().equals(PrivSchool.
-//                                    getTYPES()[0])) {
-//                                tempCourse.setPrototypeAssignments(PrivSchool.
-//                                        getPrototypeAssignments_FullTime());
-//                            } else {
-//                                tempCourse.setPrototypeAssignments(PrivSchool.
-//                                        getPrototypeAssignments_PartTime());
-//                            }
+                        if (!PrivSchool.getTrainers().isEmpty()) {
+                            currentSchoolUnit.setTrainers(PrivSchool.
+                                    getTrainers());
                         }
-
+                        if (!PrivSchool.getMapPrototypeAssignmentsType().get(
+                                currentSchoolUnit.getType()).isEmpty()) {
+                            currentSchoolUnit.setPrototypeAssignments(
+                                    PrivSchool.getMapPrototypeAssignmentsType().
+                                            get(currentSchoolUnit.getType()));
+                        }
                     } while (isYesOrNo(
                             "Do you want to add additional course? [Y/N]"));
                     break;

@@ -5,6 +5,7 @@ package privateschoolstructure;
 
 import java.time.LocalDate;
 import java.util.*;
+import java.util.function.Predicate;
 
 /**
  * Scope of class is to: 1.Store data of Set of Students (enrolled in course),
@@ -174,10 +175,33 @@ public class SchoolUnit extends Course {
         }
     }
 
-    public void addPrototypeAssignment() {
+    public void addPrototypeAssignment(Object[] prototype) {
+        if (prototypeAssignments.add(prototype)) {
+            if (!studentAssignments.keySet().isEmpty()) {
+                studentAssignments.keySet().forEach(st -> studentAssignments.
+                        get(st).add(new Assignment((String) prototype[0],
+                                                   (String) prototype[1],
+                                                   (LocalDate) prototype[2], st)));
+            }
+        } else {
+            System.out.println("Assignment already exists");
+        }
     }
 
-    public void removePrototypeAssignment() {
+    public void removePrototypeAssignment(Object[] prototype) {
+        if (prototypeAssignments.remove(prototype)) {
+            if (!studentAssignments.keySet().isEmpty()) {
+                studentAssignments.keySet().forEach((st)
+                        -> studentAssignments.get(st).removeIf(ass
+                                -> ((ass.getTitle().
+                                             equals((String) prototype[0]))
+                                    && (ass.getDescription().equals(
+                                        (String) prototype[1]))
+                                    && (ass.getDeadline() == ((LocalDate) prototype[2])))));
+            }
+        } else {
+            System.out.println("Assignment do not exist");
+        }
     }
 
     /**
@@ -187,10 +211,9 @@ public class SchoolUnit extends Course {
      */
     public void addNewAssignment(Student st, String title, String description,
                                  LocalDate deadline) {
-        Assignment ass;
         if (studentAssignments.containsKey(st)) {
-            ass = new Assignment(title, description, deadline, st);
-            studentAssignments.get(st).add(ass);
+            studentAssignments.get(st).add(new Assignment(title, description,
+                                                          deadline, st));
         } else {
             System.out.println("Student does not exist to course");
         }
