@@ -7,7 +7,7 @@ import java.time.*;
 import java.time.format.DateTimeParseException;
 import java.util.*;
 import privateschoolstructure.Assignment;
-import privateschoolstructure.PrivateSchoolCohort;
+import privateschoolstructure.SchoolUnit;
 import privateschoolstructure.Student;
 import privateschoolstructure.Trainer;
 
@@ -16,19 +16,18 @@ import privateschoolstructure.Trainer;
  * student 2.function as builder for PrivateSchoolCohort extends Course, Student
  * and Trainer objects 3.store data [List of Students, List of Trainers, List of
  * Courses(PrivateSchoolCohort), Assignment data]
+ * In version 0.2 improved functionality and readability of assignment data
  *
  * @since 01/01/2020
  * @author kkyriakidis
- * @version 0.1 (alpha)
+ * @version 0.2 (alpha)
  */
 public class PrivateSchoolAPI {
 
     private final String TITLE;
     private final String[] STREAMS;
-    private final String[] TYPES;
+    private final Map<String, LocalDate> TYPE_DATE; //Mapping of end dates per type
     private final LocalDate START_DATE;
-    private final LocalDate END_DATE_PARTTIME;
-    private final LocalDate END_DATE_FULLTIME;
     private final int NUMBER_OF_TRAINERS;
     private final int NUMBER_OF_ASSIGNMENTS;
     private final int NUMBER_OF_STUDENTS;
@@ -37,27 +36,30 @@ public class PrivateSchoolAPI {
     protected final Scanner sc;
     private List<Student> students;
     private List<Trainer> trainers;
-    private List<PrivateSchoolCohort> schoolUnits;
-    private Set<Object[]> prototypeAssignments_FullTime = new HashSet();
-    private Set<Object[]> prototypeAssignments_PartTime = new HashSet();
+    private List<SchoolUnit> schoolUnits;
+    private Map<String, Set<Object[]>> prototypeAssignments; //Mapping of assignment data per type
 
     //Constructor
     public PrivateSchoolAPI(ArrayList<Object> parameters) {
-        this.schoolUnits = new ArrayList();
-        this.trainers = new ArrayList();
-        this.students = new ArrayList();
+
         this.sc = new Scanner(System.in).useDelimiter("\\n");
         this.TITLE = (String) parameters.get(0);
         this.STREAMS = (String[]) parameters.get(1);
-        this.TYPES = (String[]) parameters.get(2);
+        this.TYPE_DATE = (Map) parameters.get(2);
         this.START_DATE = (LocalDate) parameters.get(3);
-        this.END_DATE_PARTTIME = (LocalDate) parameters.get(4);
-        this.END_DATE_FULLTIME = (LocalDate) parameters.get(5);
-        this.NUMBER_OF_TRAINERS = (int) parameters.get(6);
-        this.NUMBER_OF_ASSIGNMENTS = (int) parameters.get(7);
-        this.NUMBER_OF_STUDENTS = (int) parameters.get(8);
-        this.SUBJECTS = (String[]) parameters.get(9);
-        this.FEES_RANGE = (float[]) parameters.get(10);
+        this.NUMBER_OF_TRAINERS = (int) parameters.get(4);
+        this.NUMBER_OF_ASSIGNMENTS = (int) parameters.get(5);
+        this.NUMBER_OF_STUDENTS = (int) parameters.get(6);
+        this.SUBJECTS = (String[]) parameters.get(7);
+        this.FEES_RANGE = (float[]) parameters.get(8);
+
+        this.prototypeAssignments = new HashMap();
+        TYPE_DATE.keySet().stream().forEach((t) -> this.prototypeAssignments.
+                put(t, new HashSet<>()));
+        this.schoolUnits = new ArrayList();
+        this.trainers = new ArrayList();
+        this.students = new ArrayList();
+
     }
 
     //Builders
@@ -65,20 +67,16 @@ public class PrivateSchoolAPI {
      * partly builds a PrivateSchoolCohort object from hard coded data and user
      * choices
      */
-    public void buildSchoolUnit() {
+    public SchoolUnit buildSchoolUnit() {
         System.out.println("Please provide preferred Stream");
-        String stream = (String) chooseOption(STREAMS);
+        String stream = chooseOption(STREAMS);
         System.out.println("Please provide preferred Type");
-        String type = (String) chooseOption(TYPES);
-        LocalDate endDate = (type.equals(TYPES[0])
-                ? END_DATE_FULLTIME
-                : type.equals(TYPES[1])
-                ? END_DATE_PARTTIME
-                : null);
-
-        schoolUnits.add(new PrivateSchoolCohort(TITLE, stream, type, START_DATE,
-                endDate));
-
+        String type = (String) chooseOption(TYPE_DATE.keySet().toArray());
+        LocalDate endDate = TYPE_DATE.get(type);
+        SchoolUnit aSchoolUnit = new SchoolUnit(TITLE, stream, type, START_DATE,
+                                                endDate);
+        schoolUnits.add(aSchoolUnit);
+        return aSchoolUnit;
     }
 
     /**
@@ -88,8 +86,11 @@ public class PrivateSchoolAPI {
         String firstName = insertValidatedString("First Name of Student");
         String lastName = insertValidatedString("Last Name of Student");
         LocalDate dateOfBirth = insertValidatedDate("Date of Birth of Student ",
-                LocalDate.now().minusYears(120), LocalDate.now().minusYears(16));
-        float fees = insertValidatedNum("Tuition Fees of Student", FEES_RANGE[0], FEES_RANGE[1]);
+                                                    LocalDate.now().minusYears(
+                                                            120), LocalDate.
+                                                            now().minusYears(16));
+        float fees = insertValidatedNum("Tuition Fees of Student", FEES_RANGE[0],
+                                        FEES_RANGE[1]);
 
         Student temp = new Student(firstName, lastName, dateOfBirth, fees);
         this.students.add(temp);
@@ -100,13 +101,15 @@ public class PrivateSchoolAPI {
      * builds a Student object with validated user data and assigns it to a
      * PrivateSchoolCohort
      */
-    public void buildStudent(PrivateSchoolCohort course) {
+    public void buildStudent(SchoolUnit course) {
         String firstName = insertValidatedString("First Name of Student");
         String lastName = insertValidatedString("Last Name of Student");
         LocalDate dateOfBirth = insertValidatedDate("Date of Birth of Student ",
-                LocalDate.now().minusYears(120), LocalDate.now().minusYears(16));
+                                                    LocalDate.now().minusYears(
+                                                            120), LocalDate.
+                                                            now().minusYears(16));
         float fees = insertValidatedNum("Tuition Fees of Student", FEES_RANGE[0],
-                FEES_RANGE[1]);
+                                        FEES_RANGE[1]);
         Student temp = new Student(firstName, lastName, dateOfBirth, fees);
         this.students.add(temp);
         course.addNewStudent(this.students.get(this.students.size() - 1));
@@ -116,13 +119,15 @@ public class PrivateSchoolAPI {
     /**
      * builds a Trainer object with validated user data
      */
-    public void buildTrainer() {
+    public Trainer buildTrainer() {
         String firstName = insertValidatedString("First Name of Trainer");
         String lastName = insertValidatedString("Last Name of Trainer");
-        String subject = insertValidatedString("Subject that the trainer teaches");
+        String subject = insertValidatedString(
+                "Subject that the trainer teaches");
         Trainer temp = new Trainer(firstName, lastName, subject);
         System.out.println(temp + " succesfully added");
         this.trainers.add(temp);
+        return temp;
     }
 
     /**
@@ -132,24 +137,54 @@ public class PrivateSchoolAPI {
     public void insertAssignmentInfo() {
 
         Object[] aTemp = new Object[(3)];
-        Object[] bTemp = new Object[(3)];
-        System.out.printf("Please provide Subject, Description and Deadlines\n for "
-                + "each type of Course "
+        System.out.println("Please select type you want to enter data");
+        String type = (String) chooseOption(TYPE_DATE.keySet().toArray());
+
+        System.out.printf(
+                "Please provide Subject, Description and Deadlines\n for "
+                + type + " of Courses "
                 + "Assignments \nProposed number for Assignments is %d\n",
                 NUMBER_OF_ASSIGNMENTS);
 
-        bTemp[0] = aTemp[0] = insertValidatedString("Subject ");
-        bTemp[1] = aTemp[1] = insertValidatedString("Short Description ", ".");
+        aTemp[0] = insertValidatedString("Subject ");
+        aTemp[1] = insertValidatedString("Short Description ", ".");
 
-        aTemp[2] = insertValidatedDate("Deadline for " + TYPES[0] + " ",
-                START_DATE, END_DATE_FULLTIME.plusMonths(1));
+        aTemp[2] = insertValidatedDate("Deadline for " + type + " ",
+                                       START_DATE, TYPE_DATE.get(type).
+                                               plusMonths(
+                                                       1));
+        System.out.println(Arrays.toString(aTemp));
+        addPrototypeAssignment(aTemp, type);
+    }
 
-        bTemp[2] = insertValidatedDate("Deadline for " + TYPES[1] + " ",
-                START_DATE, END_DATE_PARTTIME.plusMonths(1));
+    /**
+     * Adds an assignment info to Private School
+     *
+     */
+    protected void addPrototypeAssignment(Object[] prototype, String type) {
+        if (TYPE_DATE.containsKey(type)) {
+            prototypeAssignments.get(type).add(prototype);
+            if (!schoolUnits.isEmpty()) {
+                schoolUnits.forEach(course -> {
+                    if (course.getType().equals(type))
+                        course.addPrototypeAssignment(
+                                prototype);
+                });
+            }
+        }
+    }
 
-        prototypeAssignments_FullTime.add(aTemp);
-
-        prototypeAssignments_PartTime.add(bTemp);
+    protected void removePrototypeAssignment(Object[] prototype, String type) {
+        if (TYPE_DATE.containsKey(type)) {
+            if (prototypeAssignments.get(type).remove(prototype)) {
+                if (!schoolUnits.isEmpty()) {
+                    schoolUnits.forEach(course -> {
+                        if (course.getType().equals(type))
+                            course.removePrototypeAssignment(prototype);
+                    });
+                };
+            }
+        }
     }
 
 //Various Functional
@@ -161,20 +196,21 @@ public class PrivateSchoolAPI {
         Set<Student> result = new HashSet();
         for (int i = 0; i < schoolUnits.size(); i++) {
             for (int j = (i + 1); j < schoolUnits.size(); j++) {
-                result.addAll(findMultipleEnrolledStudents(schoolUnits.get(i), schoolUnits.get(j)));
+                result.addAll(findMultipleEnrolledStudents(schoolUnits.get(i),
+                                                           schoolUnits.get(j)));
             }
         }
         return new ArrayList(result);
     }
 
     /**
-     * Checks two PrivateSchoolCohorts and obtains the values existing in both
+     * Checks two PrivateSchoolUnits and obtains the values existing in both
      * collections (substract) of the student collections
      */
     protected List<Student> findMultipleEnrolledStudents(
-            PrivateSchoolCohort courseA, PrivateSchoolCohort courseB) {
-        List<Student> temp = new ArrayList(courseA.getListOfCourseStudents());
-        temp.retainAll(courseB.getListOfCourseStudents());
+            SchoolUnit courseA, SchoolUnit courseB) {
+        List<Student> temp = new ArrayList(courseA.getStudents());
+        temp.retainAll(courseB.getStudents());
         return temp;
     }
 
@@ -183,9 +219,7 @@ public class PrivateSchoolAPI {
      * PrivateSchoolCohort)
      */
     public void removeStudent(Student st) {
-        for (PrivateSchoolCohort course : schoolUnits) {
-            course.removeStudent(st);
-        }
+        schoolUnits.forEach(course -> course.removeStudent(st));
         students.remove(st);
         System.out.println(st + " removed");
     }
@@ -195,38 +229,40 @@ public class PrivateSchoolAPI {
      * PrivateSchoolCohort)
      */
     public void removeTrainer(Trainer tr) {
-        for (PrivateSchoolCohort course : schoolUnits) {
-            course.removeTrainer(tr);
-        }
+        schoolUnits.forEach(course -> course.removeTrainer(tr));
         trainers.remove(tr);
         System.out.println(tr + " removed");
     }
 
-    public void gradeStudent(Student st, PrivateSchoolCohort course, Assignment ass) {
+    public void gradeStudent(Student st, SchoolUnit course, Assignment ass) {
         int mark;
         LocalDate submission;
         if (ass.getSubDateTime() != null) {
             System.out.println("Assignment has already been marked");
         } else {
-            System.out.println("Grade will be assigned to " + ass + "\n of " + st + "\n enrolled to " + course);
+            System.out.println(
+                    "Grade will be assigned to " + ass + "\n of " + st + "\n enrolled to " + course);
             System.out.println("Please provide mark");
             mark = insertValidatedNum("Mark ", 0, 100);
             System.out.println("Please provide submission date");
-            submission = insertValidatedDate("Date of submission ", course.getStartDate(), course.getEndDate().plusMonths(6));
+            submission = insertValidatedDate("Date of submission ", course.
+                                             getStartDate(),
+                                             course.getEndDate().plusMonths(6));
 
             int tempIndex = course.getMapOfAssignments().get(st).indexOf(ass);
-            course.getMapOfAssignments().get(st).get(tempIndex).setGrade(mark, submission);
+            course.getMapOfAssignments().get(st).get(tempIndex).setGrade(mark,
+                                                                         submission);
         }
     }
 
     protected String insertValidatedString(String promptString) {
 
         System.out.print("Please provide " + promptString
-                + "\n[at least 3 characters and 20 characters at most]\n");
+                         + "\n[at least 3 characters and 20 characters at most]\n");
         while (!sc.hasNext("[\\w&&[\\D]]{3,20}")) {
             System.out.print("Invalid Input \nPlease provide valid String as "
-                    + promptString
-                    + "\n[at least 3 characters and 20 characters at most]\n");
+                             + promptString
+                             + "\n[at least 3 characters and 20 characters at most]\n");
             sc.next();
         }
         return sc.next("[\\w&&[\\D]]{3,20}");
@@ -236,31 +272,34 @@ public class PrivateSchoolAPI {
     protected String insertValidatedString(String promptString, String regex) {
 
         System.out.print("Please provide " + promptString
-                + "\n[at least 3 characters]\n");
+                         + "\n[at least 3 characters]\n");
         while (!sc.hasNext(regex + "{3,}")) {
             System.out.print("Invalid Input \nPlease provide valid String as "
-                    + promptString + "\n[t least 3 characters]\n");
+                             + promptString + "\n[t least 3 characters]\n");
             sc.next();
         }
         return sc.next(regex + "{3,}");
 
     }
 
-    protected LocalDate insertValidatedDate(String promptString, LocalDate minDate, LocalDate maxDate) {
+    protected LocalDate insertValidatedDate(String promptString,
+                                            LocalDate minDate, LocalDate maxDate) {
         LocalDate tempDate;
         System.out.print("Please provide "
-                + promptString + " in format [YYYY-MM-DD]\n[Dates between "
-                + minDate.toString() + " and " + maxDate.toString() + " are accepted]\n");
+                         + promptString + " in format [YYYY-MM-DD]\n[Dates between "
+                         + minDate.toString() + " and " + maxDate.toString() + " are accepted]\n");
 
         try {
             while (true) {
                 tempDate = LocalDate.parse(sc.next());
-                if ((tempDate.compareTo(minDate) > 0) && (tempDate.compareTo(maxDate) < 0)) {
+                if ((tempDate.compareTo(minDate) > 0) && (tempDate.compareTo(
+                                                          maxDate) < 0)) {
                     return tempDate;
                 }
                 System.out.print("Invalid Input\nPlease provide "
-                        + promptString + " in format [YYYY-MM-DD]\n[Dates between "
-                        + minDate.toString() + " and " + maxDate.toString() + " are accepted]\n");
+                                 + promptString + " in format [YYYY-MM-DD]\n[Dates between "
+                                 + minDate.toString() + " and " + maxDate.
+                        toString() + " are accepted]\n");
             }
         } catch (DateTimeParseException dtpe) {
             System.out.println("Invalid Input");
@@ -274,14 +313,15 @@ public class PrivateSchoolAPI {
         float temp;
         do {
             System.out.printf(Locale.ITALY, "Please provide " + promptString
-                    + "\n[a number with floating point from %,.2f\u20AC to "
-                    + "%,.2f\u20AC is expected]\n", min, max);
+                                            + "\n[a number with floating point from %,.2f\u20AC to "
+                                            + "%,.2f\u20AC is expected]\n", min,
+                              max);
             while (!sc.hasNextFloat()) {
                 System.out.printf(Locale.ITALY,
-                        "Invalid Input \nPlease provide "
-                        + promptString
-                        + "\n[a number with floating point from %,.2f\u20AC to "
-                        + "%,.2f\u20AC is expected]\n", min, max);
+                                  "Invalid Input \nPlease provide "
+                                  + promptString
+                                  + "\n[a number with floating point from %,.2f\u20AC to "
+                                  + "%,.2f\u20AC is expected]\n", min, max);
                 sc.next();
             }
             temp = sc.nextFloat();
@@ -293,12 +333,14 @@ public class PrivateSchoolAPI {
         int temp;
         do {
             System.out.printf("Please provide " + promptString
-                    + "\n[an integer number from %d to %d is expected]\n", min, max);
+                              + "\n[an integer number from %d to %d is expected]\n",
+                              min, max);
             while (!sc.hasNextInt()) {
                 System.out.printf(
                         "Invalid Input \nPlease provide "
                         + promptString
-                        + "\n[a integer number from %d to %d is expected]\n", min, max);
+                        + "\n[a integer number from %d to %d is expected]\n",
+                        min, max);
                 sc.next();
             }
             temp = sc.nextInt();
@@ -306,8 +348,9 @@ public class PrivateSchoolAPI {
         return temp;
     }
 
-    protected Object chooseOption(Object[] array) {
-        System.out.println("Please select from following list by typing the respective value");
+    protected <T> T chooseOption(T[] array) {
+        System.out.println(
+                "Please select from following list by typing the respective value");
         printOptionMenuList(array);
 
         return array[(insertValidatedNum("choice number ", 1, array.length) - 1)];
@@ -330,10 +373,17 @@ public class PrivateSchoolAPI {
         ArrayList<Student> studentsWithDueAssignment = new ArrayList();
         if (!students.isEmpty()) {
             if (!schoolUnits.isEmpty()) {
-                checkDate = insertValidatedDate("Date to check ", START_DATE, END_DATE_PARTTIME.plusMonths(1));
-                System.out.println("Date you requested is " + checkDate + " and it is " + checkDate.getDayOfWeek());
+                checkDate = insertValidatedDate("Date to check ", START_DATE,
+                                                TYPE_DATE.values().stream().max(
+                                                        (t1, t2) -> t1.
+                                                                compareTo(t2)).
+                                                        get().plusMonths(1));
+
+                System.out.println(
+                        "Date you requested is " + checkDate + " and it is " + checkDate.
+                                getDayOfWeek());
                 for (Student st : students) {
-                    for (PrivateSchoolCohort course : schoolUnits) {
+                    for (SchoolUnit course : schoolUnits) {
                         if (course.isStudentWithDueThisWeek(st, checkDate)) {
                             studentsWithDueAssignment.add(st);
                             break;
@@ -349,6 +399,18 @@ public class PrivateSchoolAPI {
         return studentsWithDueAssignment;
     }
 
+    public void addAssignmentToStudent(Student st, SchoolUnit course) {
+        String tempTitle, tempDescription;
+        LocalDate tempDeadline;
+
+        tempTitle = insertValidatedString("Subject ");
+        tempDescription = insertValidatedString("Short Description ", ".");
+        tempDeadline = insertValidatedDate("Deadline ", course.getStartDate(),
+                                           course.getEndDate().plusMonths(1));
+        course.addNewAssignment(st, tempTitle, tempDescription, tempDeadline);
+
+    }
+
     //Getters and Setters
     public String getTITLE() {
         return TITLE;
@@ -358,20 +420,16 @@ public class PrivateSchoolAPI {
         return STREAMS;
     }
 
-    public String[] getTYPES() {
-        return TYPES;
+    public Set<String> getTYPES() {
+        return TYPE_DATE.keySet();
     }
 
     public LocalDate getSTART_DATE() {
         return START_DATE;
     }
 
-    public LocalDate getEND_DATE_PARTTIME() {
-        return END_DATE_PARTTIME;
-    }
-
-    public LocalDate getEND_DATE_FULLTIME() {
-        return END_DATE_FULLTIME;
+    public LocalDate getEND_DATEperTYPE(String type) {
+        return this.TYPE_DATE.get(type);
     }
 
     public int getNUMBER_OF_TRAINERS() {
@@ -394,7 +452,7 @@ public class PrivateSchoolAPI {
         return FEES_RANGE;
     }
 
-    public List<PrivateSchoolCohort> getSchoolUnits() {
+    public List<SchoolUnit> getSchoolUnits() {
         return schoolUnits;
     }
 
@@ -406,22 +464,7 @@ public class PrivateSchoolAPI {
         return trainers;
     }
 
-    public Set<Object[]> getPrototypeAssignments_FullTime() {
-        return prototypeAssignments_FullTime;
-    }
-
-    public Set<Object[]> getPrototypeAssignments_PartTime() {
-        return prototypeAssignments_PartTime;
-    }
-
-    public void addAssignmentToStudent(Student st, PrivateSchoolCohort course) {
-        String tempTitle, tempDescription;
-        LocalDate tempDeadline;
-
-        tempTitle = insertValidatedString("Subject ");
-        tempDescription = insertValidatedString("Short Description ", ".");
-        tempDeadline = insertValidatedDate("Deadline ", course.getStartDate(), course.getEndDate().plusMonths(1));
-        course.addNewAssignment(st, tempTitle, tempDescription, tempDeadline);
-
+    public Map<String, Set<Object[]>> getMapPrototypeAssignmentsType() {
+        return prototypeAssignments;
     }
 }

@@ -5,7 +5,6 @@ package privateschoolstructure;
 
 import java.time.LocalDate;
 
-
 /**
  *
  * @since 01/01/2020
@@ -25,11 +24,12 @@ public class Assignment implements Comparable<Assignment> {
     private int totalMark;
     private Student student;
     private static int instantiationCounter; //a static counter of objects potentially used as an id number also.
-    private int id;
+    private int id = 600000;
 
-    public Assignment(String title, String description, LocalDate deadline, Student student) {
+    public Assignment(String title, String description, LocalDate deadline,
+                      Student student) {
         instantiationCounter++;
-        this.id = instantiationCounter;
+        this.id += instantiationCounter;
         this.title = title;
         this.description = description;
         this.deadline = deadline;
@@ -38,7 +38,7 @@ public class Assignment implements Comparable<Assignment> {
 
     public Assignment(String title, String description, Student student) {
         instantiationCounter++;
-        this.id = instantiationCounter;
+        this.id += instantiationCounter;
         this.title = title;
         this.description = description;
         this.student = student;
@@ -57,10 +57,11 @@ public class Assignment implements Comparable<Assignment> {
     @Override
     public String toString() {
         return "Assignment : " + title + ", " + description + ", deadline: "
-                + deadline + "\n submitted: " + subDateTime
-                + ", grade (oral/final): " + oralMark + "% / "
-                + totalMark + "%, responsible student: " + this.student.getLastName() + " " + this.student.getFirstName()
-                + " [id=" + id + ']';
+               + deadline + "\n submitted: " + subDateTime
+               + ", grade (oral/final): " + oralMark + "% / "
+               + totalMark + "%, responsible student: " + this.student.
+                        getLastName() + " " + this.student.getFirstName()
+               + " [id=" + id + ']';
     }
 
     @Override
@@ -109,10 +110,6 @@ public class Assignment implements Comparable<Assignment> {
         this.totalMark = totalMark;
     }
 
-    public int getId() {
-        return id;
-    }
-
     public LocalDate getDeadline() {
         return deadline;
     }
@@ -121,10 +118,18 @@ public class Assignment implements Comparable<Assignment> {
         this.deadline = deadline;
     }
 
+    public Student getStudent() {
+        return student;
+    }
+
     public void setStudent(Student student) {
         if (this.student == null) {
             this.student = student;
         }
         System.out.println("Cannot reassign assignment to another student");
+    }
+
+    public static int getInstantiationCounter() {
+        return instantiationCounter;
     }
 }

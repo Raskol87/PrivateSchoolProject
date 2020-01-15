@@ -16,12 +16,12 @@ public class Trainer implements Comparable<Trainer> {
     private String lastName;
     private String subject;
     private static int instantiationCounter; //a static counter of objects potentially used as an id number also.
-    private int id;
+    private int id = 8000;
 
     //Constructors
     public Trainer(String firstName, String lastName, String subject) {
         instantiationCounter++;
-        this.id = instantiationCounter;
+        this.id += instantiationCounter;
         this.firstName = firstName;
         this.lastName = lastName;
         this.subject = subject;
@@ -32,11 +32,12 @@ public class Trainer implements Comparable<Trainer> {
         return "Trainer : " + lastName + " " + firstName + ", for subject : " + subject;
     }
 
+    @Override
     public int compareTo(Trainer o) {
         int compareResult = this.lastName.compareTo(o.lastName);
         return compareResult == 0
-                ? this.firstName.compareTo(o.firstName)
-                : compareResult;
+               ? this.firstName.compareTo(o.firstName)
+               : compareResult;
     }
 
     //Getters and Setters
@@ -54,10 +55,6 @@ public class Trainer implements Comparable<Trainer> {
 
     public void setLastName(String lastName) {
         this.lastName = lastName;
-    }
-
-    public int getId() {
-        return id;
     }
 
     public static int getInstantiationCounter() {
