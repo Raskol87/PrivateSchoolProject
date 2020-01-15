@@ -22,10 +22,11 @@ import privateschoolstructure.Trainer;
  *
  * Aim of the Class is to provide to user multiple and reduntant "ways" to
  * proceed to options
- *
+ *In version 0.2 improved readability of menus and functionality of assignment menus
+ * 
  * @since 01/01/2020
  * @author kkyriakidis
- * @version 0.1 (alpha)
+ * @version 0.2 (alpha)
  */
 public class PrivateSchoolUI {
 
@@ -49,6 +50,7 @@ public class PrivateSchoolUI {
             PrivSchRand.createRandomPrivateSchool();
         }
         runMainMenu();
+        System.out.println("Program Terminated. Thank you");
     }
 
     //1st level menu-Main Menu
@@ -76,7 +78,6 @@ public class PrivateSchoolUI {
                     break;
             }
         }
-        System.out.println("Program Terminated. Thank you");
     }
 
     //2nd level menu
@@ -133,7 +134,7 @@ public class PrivateSchoolUI {
                         if (!PrivSchool.getSchoolUnits().isEmpty()) {
                             if (isYesOrNo(
                                     "Do you want to assign created trainer to existing courses? [y/n]"
-                                    + "\nThis will assign stored trainers to all stored courses.")) {
+                                    + "\nThis will assign current trainer to all stored courses.")) {
                                 PrivSchool.getSchoolUnits().forEach(
                                         course -> course.addTrainer(aTrainer));
                             }
@@ -563,9 +564,8 @@ public class PrivateSchoolUI {
 
     private void printCreationMenu() {
         System.out.println(
-                "It is strongly recommended to create first\n trainers,"
-                + " assignment information and students and then the courses,\n "
-                + "in order to use for you convenience the \"bulk assigning\" options");
+                "It is recommended to create first\n trainers,"
+                + " assignment information and students and then the courses.\n ");
         System.out.println("\nPlease type number to select relevant option :");
         System.out.println("\'1\' for inserting new Student entry");
         System.out.println("\'2\' for creating new Course entry");

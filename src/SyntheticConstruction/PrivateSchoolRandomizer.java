@@ -20,7 +20,7 @@ import privateschoolstructure.Trainer;
 /**
  * @since 01/01/2020
  * @author kkyriakidis
- * @version 0.1 (alpha)
+ * @version 0.2 (alpha)
  */
 public class PrivateSchoolRandomizer {
 
@@ -184,6 +184,8 @@ public class PrivateSchoolRandomizer {
             tempDeadline = tempDeadline.plusDays(
                     tempPeriod / codingBootcamp.getNUMBER_OF_ASSIGNMENTS());
         }
+        codingBootcamp.getMapPrototypeAssignmentsType().put(type,
+                                                            resultAssignment);
         return resultAssignment;
     }
 
@@ -220,17 +222,19 @@ public class PrivateSchoolRandomizer {
      */
     private void gradAssignments() {
 
-        for (SchoolUnit course : codingBootcamp.getSchoolUnits()) {
-            LocalDate minDate = course.getStartDate();
-            LocalDate maxDate = course.getEndDate().plusMonths(1);
+        codingBootcamp.getSchoolUnits().
+                forEach((course) -> {
+                    LocalDate minDate = course.getStartDate();
+                    LocalDate maxDate = course.getEndDate().plusMonths(1);
 
-            course.getMapOfAssignments().values().forEach(
-                    (ArrayList<Assignment> assignment) -> { //den to pistevo oti "mallon" doulevei afto. an kai diskoleuomai na katallavo ta lambda....
-                        assignment.forEach((assignment1) -> {
-                            assignment1.setGrade(r.nextInt(101), randomDate(
-                                                 minDate, maxDate));
-                        });
-                    });
-        }
+                    course.getMapOfAssignments().values().forEach(
+                            (ArrayList<Assignment> assignment) -> {
+                                assignment.forEach((assignment1) -> {
+                                    assignment1.setGrade(r.nextInt(101),
+                                                         randomDate(minDate,
+                                                                    maxDate));
+                                });
+                            });
+                });
     }
 }

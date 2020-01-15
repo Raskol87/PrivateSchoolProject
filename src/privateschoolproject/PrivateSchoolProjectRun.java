@@ -15,12 +15,14 @@ import privateschoolAPI.PrivateSchoolUI;
 /**
  * @since 01/01/2020
  * @author kkyriakidis
- * @version 0.1 (alpha)
+ * @version 0.2 (alpha)
  */
 public class PrivateSchoolProjectRun {
 
     /**
-     *
+     * Version 0.2 implements multiple options (end dates) per type,
+     * also in version 0.2 some functionality and readability of menus (UI)
+     * enhanced
      */
     public static void main(String[] args) {
 
@@ -31,7 +33,7 @@ public class PrivateSchoolProjectRun {
             Map<String, LocalDate> aMap = new HashMap<>();
             aMap.put("full-time", LocalDate.of(2020, 2, 21));
             aMap.put("part-time", LocalDate.of(2020, 5, 25));
-            aMap.put("elearning", LocalDate.of(2020, 8,25));
+            aMap.put("elearning", LocalDate.of(2020, 8, 25));
             TYPES = Collections.unmodifiableMap(aMap);
         }
         final LocalDate START_DATE = LocalDate.of(2019, 11, 11);

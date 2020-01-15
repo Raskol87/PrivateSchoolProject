@@ -5,7 +5,6 @@ package privateschoolstructure;
 
 import java.time.LocalDate;
 import java.util.*;
-import java.util.function.Predicate;
 
 /**
  * Scope of class is to: 1.Store data of Set of Students (enrolled in course),
@@ -14,7 +13,7 @@ import java.util.function.Predicate;
  *
  * @since 01/01/2020
  * @author kkyriakidis
- * @version 0.1 (alpha)
+ * @version 0.2 (alpha)
  */
 public class SchoolUnit extends Course {
 
@@ -191,7 +190,7 @@ public class SchoolUnit extends Course {
     public void removePrototypeAssignment(Object[] prototype) {
         if (prototypeAssignments.remove(prototype)) {
             if (!studentAssignments.keySet().isEmpty()) {
-                studentAssignments.keySet().forEach((st)
+                studentAssignments.keySet().forEach(st
                         -> studentAssignments.get(st).removeIf(ass
                                 -> ((ass.getTitle().
                                              equals((String) prototype[0]))
